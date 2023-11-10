@@ -1,95 +1,57 @@
-label_1 --> 0
-label_2 --> 1
-label_3 --> 4
-label_4 --> 3
-label_5 --> 5
-label_6 --> 7
-label_7 --> 9
+Successfully Compiled
+
+Struct Name = main
+	Attributes = 
+				Name	DataType	Scope	Default	pointer	
+	Constants = 
+				Nmainmainlabel_1 --> 0
 Block #0
 Starts : 0
-Ends : 4
-gotoLabel : 
-isRequired : 1
-Successor Blocks : 1 
--------------------------------------------------------------
-
-Block #1
-Starts : 5
-Ends : 8
-gotoLabel : label_5
-isRequired : 1
-Successor Blocks : 2 5 
--------------------------------------------------------------
-
-Block #2
-Starts : 9
-Ends : 9
-gotoLabel : label_3
-isRequired : 1
-Successor Blocks : 4 
--------------------------------------------------------------
-
-Block #3
-Starts : 10
-Ends : 13
-gotoLabel : label_2
-isRequired : 1
-Successor Blocks : 1 
--------------------------------------------------------------
-
-Block #4
-Starts : 14
-Ends : 19
-gotoLabel : label_4
-isRequired : 1
-Successor Blocks : 3 
--------------------------------------------------------------
-
-Block #5
-Starts : 20
-Ends : 26
+Ends : 7
 gotoLabel : 
 isRequired : 1
 Successor Blocks : 
 -------------------------------------------------------------
 
-Block #6
-Starts : 27
-Ends : 27
-gotoLabel : 
-isRequired : 0
-Successor Blocks : 7 
--------------------------------------------------------------
+Name : _t1_2
+startLine : 1
+endLine : 2
+frequency : 1
+register : 
 
-Block #7
-Starts : 28
-Ends : 41
-gotoLabel : 
-isRequired : 0
-Successor Blocks : 
--------------------------------------------------------------
+ ---------------------------------------------- 
+Name : _t2_2
+startLine : 3
+endLine : 4
+frequency : 1
+register : 
 
-Block #8
-Starts : 42
-Ends : 42
-gotoLabel : 
-isRequired : 0
-Successor Blocks : 9 
--------------------------------------------------------------
+ ---------------------------------------------- 
+Name : _t3_2
+startLine : 5
+endLine : 6
+frequency : 1
+register : 
 
-Block #9
-Starts : 43
-Ends : 44
-gotoLabel : 
-isRequired : 0
-Successor Blocks : 
--------------------------------------------------------------
+ ---------------------------------------------- 
+Name : a_2
+startLine : 2
+endLine : 5
+frequency : 1
+register : 
 
-Block #10
-Starts : 45
-Ends : 45
-gotoLabel : 
-isRequired : 0
-Successor Blocks : 
--------------------------------------------------------------
+ ---------------------------------------------- 
+Name : b_2
+startLine : 4
+endLine : 5
+frequency : 1
+register : 
 
+ ---------------------------------------------- 
+Name : c_2
+startLine : 6
+endLine : -1
+frequency : 0
+register : 
+
+ ---------------------------------------------- 

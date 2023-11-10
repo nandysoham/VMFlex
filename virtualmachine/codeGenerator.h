@@ -1,9 +1,7 @@
 #include <iostream>
 #include <fstream>
-#include <vector>
 #include <algorithm>
+#include <vector>
+#include <utility>
 
-
-using namespace std;
-
-int parser();
+void codeGenerator();

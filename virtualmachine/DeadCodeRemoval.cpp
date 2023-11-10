@@ -2,25 +2,7 @@
 #include "Structure.h"
 using namespace std;
 
-vector <string> processWords(string line){
-    vector <string> words;
-    string word;
-    for(int i =0; i < line.length(); i++){
-        if(line[i] == ' '){
-            if(word.length() > 0)
-                words.push_back(word);
 
-            word.clear();
-        }
-        else{
-            word.push_back(line[i]);
-        }
-    }
-    if(word.size() > 0)
-        words.push_back(word);
-    
-    return words;
-}
 
 
 void printBasicBlocks(){
@@ -67,7 +49,6 @@ void blockReachability(){
 
 
 void createDeadCodeOptimize(vector <string> &inputStream){
-    vector <string> optimizedStream;
     for(auto bb : basicBlockCollection){
         if(bb.isRequired){
             for(int line = bb.startLine ; line <= bb.endLine; line++){
