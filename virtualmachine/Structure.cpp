@@ -2,6 +2,7 @@
 #include <string>
 #include <map>
 #include <set>
+#include "../CompFlex/helper.h"
 
 using namespace std;
  struct BasicBlock{
@@ -15,10 +16,42 @@ using namespace std;
 };
 
 
+// function that contains all information of a function
+class FunctionDetailsTable : public FunctionTable {
+    public:
+        string registers;
+        string variables;
+        vector <string> optCode;
+        FunctionDetailsTable();
+        FunctionDetailsTable(FunctionTable _ft); 
+};
+
+
+FunctionDetailsTable::FunctionDetailsTable(){
+
+}
+
+
+FunctionDetailsTable::FunctionDetailsTable(FunctionTable _ft){
+    this->functionName = _ft.functionName;
+    this->code = _ft.code;
+    this->label = _ft.label;
+    this->returnType = _ft.returnType;
+    this->parameters = _ft.parameters;
+    this->localVariables = _ft.localVariables;
+    this->tempVariables = _ft.tempVariables;
+
+
+    // child class params
+    this->optCode = {};
+}
+
 vector <BasicBlock> basicBlockCollection;       // array to collect the basic blocks
 vector <int> basicBlockAdj;                     // creates the adjacency list for that
 map <string, int> labelsToColMap;
-vector <string> optimizedStream;
+
+map <string, vector <string> > functionCalleeMap;
+map <string, FunctionDetailsTable> functionDetailsMap;
 
 vector <string> processWords(string line){
     vector <string> words;

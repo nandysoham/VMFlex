@@ -6,7 +6,11 @@
 #include <fstream>
 #include <queue>
  
+
 using namespace std;
 
 
-void deadCodeRemoval(vector <string> &inputStream);
+void deadCodeRemoval(vector <string> &inputStream, string name);
+void showCallerCalllee();
+void removeUnessentialFunction();
+void printFunctionDetails();

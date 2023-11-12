@@ -1,57 +1,315 @@
-Successfully Compiled
+label_1:
+Return a_2
 
-Struct Name = main
-	Attributes = 
-				Name	DataType	Scope	Default	pointer	
-	Constants = 
-				Nmainmainlabel_1 --> 0
+label_1 --> 0
 Block #0
 Starts : 0
-Ends : 7
+Ends : 1
 gotoLabel : 
 isRequired : 1
 Successor Blocks : 
 -------------------------------------------------------------
 
-Name : _t1_2
-startLine : 1
-endLine : 2
-frequency : 1
-register : 
+label_2:
+Return s_2
 
- ---------------------------------------------- 
-Name : _t2_2
-startLine : 3
-endLine : 4
-frequency : 1
-register : 
+label_1 --> 0
+label_2 --> 0
+Block #0
+Starts : 0
+Ends : 1
+gotoLabel : 
+isRequired : 1
+Successor Blocks : 
+-------------------------------------------------------------
 
- ---------------------------------------------- 
-Name : _t3_2
-startLine : 5
-endLine : 6
-frequency : 1
-register : 
+label_3:
+_t1_2 = #1
+k_2 = _t1_2
+_t2_3 = #1
+k_2 = _t2_3
+label_4:
+_t3_3 = #2
+_t4_3 = k_2 < _t3_3
+if ( _t4_3 == #0 ) goto label_7
+goto label_5
+label_6:
+_t5_3 = k_2
+k_2 = k_2 + #1
+goto label_4
+label_5:
+_t6_3 = #2
+lal_3 = _t6_3
+_t7_3 = r_2
+r_2 = r_2 + #1
+goto label_6
+label_7:
+_t8_2 = #3
+lal_3 = _t8_2
+_t21_2 = #1
+j_2 = _t21_2
+FunctionCall fi
+_t22_2 = #0
+param _t22_2
+_t23_2 = #1
+param _t23_2
+call label_8
+label_9:
+_t24_2 = ReturnVal
+_t25_2 = #0
+Return _t25_2
+_t26_2 = #1
+val_2 = _t26_2
+_t27_2 = #2
+_t28_2 = _t27_2 * val_2
+_t29_2 = #1
+_t30_2 = _t28_2 + _t29_2
+val_2 = _t30_2
+_t31_2 = #1
+_t32_2 = val_2 + _t31_2
+val_2 = _t32_2
 
- ---------------------------------------------- 
-Name : a_2
-startLine : 2
-endLine : 5
-frequency : 1
-register : 
+label_1 --> 0
+label_2 --> 0
+label_3 --> 0
+label_4 --> 1
+label_5 --> 4
+label_6 --> 3
+label_7 --> 5
+label_8 --> 0
+label_9 --> 6
+Block #0
+Starts : 0
+Ends : 4
+gotoLabel : 
+isRequired : 1
+Successor Blocks : 1 
+-------------------------------------------------------------
 
- ---------------------------------------------- 
-Name : b_2
-startLine : 4
-endLine : 5
-frequency : 1
-register : 
+Block #1
+Starts : 5
+Ends : 8
+gotoLabel : label_7
+isRequired : 1
+Successor Blocks : 2 5 
+-------------------------------------------------------------
 
- ---------------------------------------------- 
-Name : c_2
-startLine : 6
-endLine : -1
-frequency : 0
-register : 
+Block #2
+Starts : 9
+Ends : 9
+gotoLabel : label_5
+isRequired : 1
+Successor Blocks : 4 
+-------------------------------------------------------------
 
- ---------------------------------------------- 
+Block #3
+Starts : 10
+Ends : 13
+gotoLabel : label_4
+isRequired : 1
+Successor Blocks : 1 
+-------------------------------------------------------------
+
+Block #4
+Starts : 14
+Ends : 19
+gotoLabel : label_6
+isRequired : 1
+Successor Blocks : 3 
+-------------------------------------------------------------
+
+Block #5
+Starts : 20
+Ends : 30
+gotoLabel : label_8
+isRequired : 1
+Successor Blocks : 6 0 
+-------------------------------------------------------------
+
+Block #6
+Starts : 31
+Ends : 34
+gotoLabel : 
+isRequired : 1
+Successor Blocks : 
+-------------------------------------------------------------
+
+Block #7
+Starts : 35
+Ends : 44
+gotoLabel : 
+isRequired : 0
+Successor Blocks : 
+-------------------------------------------------------------
+
+label_8:
+_t9_3 = #10
+c_0_3 = _t9_3
+memory c_3 _t9_3 #4
+_t10_3 = #7
+_t11_3 = _t10_3 * #4
+_t12_3 = c_3 + _t11_3
+_t13_3 = a_3 + b_3
+_t14_3 = _t13_3 + lal_3
+*_t12_3 = _t14_3
+_t15_3 = #7
+_t16_3 = _t15_3 * #4
+_t17_3 = c_3 + _t16_3
+Return *_t17_3
+_t18_3 = #0
+s_3 = _t18_3
+_t19_3 = #1
+_t20_3 = s_3 + _t19_3
+s_3 = _t20_3
+
+label_1 --> 0
+label_2 --> 0
+label_3 --> 0
+label_4 --> 1
+label_5 --> 4
+label_6 --> 3
+label_7 --> 5
+label_8 --> 0
+label_9 --> 6
+Block #0
+Starts : 0
+Ends : 13
+gotoLabel : 
+isRequired : 1
+Successor Blocks : 
+-------------------------------------------------------------
+
+Block #1
+Starts : 14
+Ends : 18
+gotoLabel : 
+isRequired : 0
+Successor Blocks : 
+-------------------------------------------------------------
+
+fi is called by main, 
+Functions that need to be removed 
+f soham 
+fi : 
+Org code
+
+label_8:
+_t9_3 = #10
+c_0_3 = _t9_3
+memory c_3 _t9_3 #4
+_t10_3 = #7
+_t11_3 = _t10_3 * #4
+_t12_3 = c_3 + _t11_3
+_t13_3 = a_3 + b_3
+_t14_3 = _t13_3 + lal_3
+*_t12_3 = _t14_3
+_t15_3 = #7
+_t16_3 = _t15_3 * #4
+_t17_3 = c_3 + _t16_3
+Return *_t17_3
+_t18_3 = #0
+s_3 = _t18_3
+_t19_3 = #1
+_t20_3 = s_3 + _t19_3
+s_3 = _t20_3
+Opt code
+
+label_8:
+_t9_3 = #10
+c_0_3 = _t9_3
+memory c_3 _t9_3 #4
+_t10_3 = #7
+_t11_3 = _t10_3 * #4
+_t12_3 = c_3 + _t11_3
+_t13_3 = a_3 + b_3
+_t14_3 = _t13_3 + lal_3
+*_t12_3 = _t14_3
+_t15_3 = #7
+_t16_3 = _t15_3 * #4
+_t17_3 = c_3 + _t16_3
+Return *_t17_3
+main : 
+Org code
+
+label_3:
+_t1_2 = #1
+k_2 = _t1_2
+_t2_3 = #1
+k_2 = _t2_3
+label_4:
+_t3_3 = #2
+_t4_3 = k_2 < _t3_3
+if ( _t4_3 == #0 ) goto label_7
+goto label_5
+label_6:
+_t5_3 = k_2
+k_2 = k_2 + #1
+goto label_4
+label_5:
+_t6_3 = #2
+lal_3 = _t6_3
+_t7_3 = r_2
+r_2 = r_2 + #1
+goto label_6
+label_7:
+_t8_2 = #3
+lal_3 = _t8_2
+_t21_2 = #1
+j_2 = _t21_2
+FunctionCall fi
+_t22_2 = #0
+param _t22_2
+_t23_2 = #1
+param _t23_2
+call label_8
+label_9:
+_t24_2 = ReturnVal
+_t25_2 = #0
+Return _t25_2
+_t26_2 = #1
+val_2 = _t26_2
+_t27_2 = #2
+_t28_2 = _t27_2 * val_2
+_t29_2 = #1
+_t30_2 = _t28_2 + _t29_2
+val_2 = _t30_2
+_t31_2 = #1
+_t32_2 = val_2 + _t31_2
+val_2 = _t32_2
+Opt code
+
+label_3:
+_t1_2 = #1
+k_2 = _t1_2
+_t2_3 = #1
+k_2 = _t2_3
+label_4:
+_t3_3 = #2
+_t4_3 = k_2 < _t3_3
+if ( _t4_3 == #0 ) goto label_7
+goto label_5
+label_6:
+_t5_3 = k_2
+k_2 = k_2 + #1
+goto label_4
+label_5:
+_t6_3 = #2
+lal_3 = _t6_3
+_t7_3 = r_2
+r_2 = r_2 + #1
+goto label_6
+label_7:
+_t8_2 = #3
+lal_3 = _t8_2
+_t21_2 = #1
+j_2 = _t21_2
+FunctionCall fi
+_t22_2 = #0
+param _t22_2
+_t23_2 = #1
+param _t23_2
+call label_8
+label_9:
+_t24_2 = ReturnVal
+_t25_2 = #0
+Return _t25_2

@@ -3,6 +3,8 @@
 #include <map>
 #include <set>
 
+
+#include "../CompFlex/helper.h"
 using namespace std;
 
  struct BasicBlock{
@@ -16,12 +18,22 @@ using namespace std;
 };
 
 
+class FunctionDetailsTable : public FunctionTable {
+    public:
+        string registers;
+        string variables;
+        vector <string> optCode;
+        FunctionDetailsTable();
+        FunctionDetailsTable(FunctionTable _ft); 
+};
+
 extern vector <BasicBlock> basicBlockCollection;       // array to collect the basic blocks
 extern vector <int> basicBlockAdj;                     // creates the adjacency list for that
 extern map <string, int> labelsToColMap;
-extern vector <string> optimizedStream;
-extern vector <string> processWords(string line);
 
+extern vector <string> processWords(string line);
+extern map <string, vector <string> > functionCalleeMap;
+extern map <string, FunctionDetailsTable> functionDetailsMap;
 
 // ---------------  REGISTER ALLOCATION ----------------------//
 struct Variable{

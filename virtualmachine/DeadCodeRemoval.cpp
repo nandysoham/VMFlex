@@ -48,7 +48,8 @@ void blockReachability(){
 }
 
 
-void createDeadCodeOptimize(vector <string> &inputStream){
+void createDeadCodeOptimize(vector <string> &inputStream, string name){
+    vector <string> optimizedStream;
     for(auto bb : basicBlockCollection){
         if(bb.isRequired){
             for(int line = bb.startLine ; line <= bb.endLine; line++){
@@ -57,22 +58,28 @@ void createDeadCodeOptimize(vector <string> &inputStream){
         }
     }
 
-    ofstream optimizedFile("optimizedcode.tac");
-    if (!optimizedFile.is_open()) {
-        cout << "Error opening file." << endl;
-        return;
-    }
+    // write the optimized code
+    functionDetailsMap[name].optCode = optimizedStream;
 
-    for (const string& line : optimizedStream) {
-        optimizedFile << line << endl;
-    }
-    optimizedFile.close();
+    
+
+
+    // ofstream optimizedFile("optimizedcode.tac");
+    // if (!optimizedFile.is_open()) {
+    //     cout << "Error opening file." << endl;
+    //     return;
+    // }
+
+    // for (const string& line : optimizedStream) {
+    //     optimizedFile << line << endl;
+    // }
+    // optimizedFile.close();
 }
 
 /**
  * Builds the Basic blocks and the adjaceny list for the basic blocks
 */
-void getBasicBlocks(vector <string> &inputStream){
+void getBasicBlocks(vector <string> &inputStream, string name){
 
    
     struct BasicBlock _block = BasicBlock();
@@ -84,6 +91,15 @@ void getBasicBlocks(vector <string> &inputStream){
 
         string line = inputStream[i];
         vector <string> words = processWords(line);
+
+        // check which of the functions are begin called from here
+        if(find(words.begin(), words.end(), "FunctionCall") != words.end()){
+            int idx = find(words.begin(), words.end(), "FunctionCall") - words.begin();
+            string calleeFunction = words[idx + 1];
+            functionCalleeMap[calleeFunction].push_back(name);
+        }
+
+
 
         if(find(words.begin(), words.end(), "goto") != words.end()){
             
@@ -105,6 +121,7 @@ void getBasicBlocks(vector <string> &inputStream){
             _block.startLine = i + 1;
             
         }
+       
         else if(find(words.begin(), words.end(), "call") != words.end()){
             int idx = find(words.begin(), words.end(), "call") - words.begin();
             _block.endLine = i;
@@ -180,10 +197,63 @@ void getBasicBlocks(vector <string> &inputStream){
 
 }
 
+void showCallerCalllee(){
+    for(auto [calledFunction, callerFunctionVec] : functionCalleeMap ){
+        cout<<calledFunction <<" is called by ";
+        for(auto i : callerFunctionVec)
+            cout<<i<<", ";
+        cout<<endl;
+    }
+}
 
-void deadCodeRemoval(vector <string> &inputStream){
-    getBasicBlocks(inputStream);
+
+void removeUnessentialFunction(){
+    vector <string> removeFunctionsVec;
+    for(auto [_functionName, _functionDetails] : functionDetailsMap){
+        if(_functionName == "main") continue;
+        bool removeFunction = true;
+        for(auto calleeFunction : functionCalleeMap[_functionName]){
+            if(calleeFunction != _functionName){
+                removeFunction = false;
+                break;
+            }
+        }
+
+        if(removeFunction){
+            removeFunctionsVec.push_back(_functionName);
+        }
+    }
+    cout<<"Functions that need to be removed "<<endl;
+    for(auto i : removeFunctionsVec)    
+        cout<<i<<" ";
+
+    cout<<endl;
+
+    for(auto i : removeFunctionsVec){
+        functionDetailsMap.erase(i);
+        functionCalleeMap.erase(i);
+    }
+}
+
+
+void printFunctionDetails(){
+    for(auto [_functionName, _functionDetails] : functionDetailsMap){
+        cout<<_functionName<<" : "<<endl;
+        cout<<"Org code"<<endl<<endl;
+        for(auto i : _functionDetails.code)
+            cout<<i<<endl;
+
+        cout<<"Opt code"<<endl<<endl;
+        for(auto i : _functionDetails.optCode)
+            cout<<i<<endl;
+    }
+}
+
+// will not work for function overloading
+void deadCodeRemoval(vector <string> &inputStream, string name){
+    basicBlockCollection.clear();
+    getBasicBlocks(inputStream, name);
     blockReachability();
-    createDeadCodeOptimize(inputStream);
+    createDeadCodeOptimize(inputStream, name);
     printBasicBlocks();
 };

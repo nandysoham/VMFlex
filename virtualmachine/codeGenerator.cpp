@@ -3,17 +3,21 @@
 #include "codeGenerator.h"
 
 void intializeReg(){
-    vector <string> Temp = {
-        "x4", "x5", "x6" , "x7", "x18", "x19", "x20",
+    vector <string> TempStorage = {
+         "x7", "x18", "x19", "x20",
         "x21", "x22", "x23", "x24", "x25", "x26", "x27",
         "x28", "x29", "x30", "x31"
         };
 
+    vector <string> TempCal = {
+        "x4", "x5", "x6" 
+    };
     vector <string> Arg = {
         "x12", "x13", "x14", "x15", "x16", "x17"
     };
 
-    RISCVReg["Temp"]  = Temp;
+    RISCVReg["TempStorage"]  = TempStorage;
+    RISCVReg["TempCal"] = TempCal;
     RISCVReg["Arg"] =  Arg;
 }
 
@@ -31,6 +35,7 @@ void printVariableMap(){
 
 void codeGenerator(){
     intializeReg();
+    vector <string> optimizedStream;
     for(int wordIndex = 0; wordIndex < optimizedStream.size(); wordIndex++){
         string line = optimizedStream[wordIndex];
         vector <string> words = processWords(line);
