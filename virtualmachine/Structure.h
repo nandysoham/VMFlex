@@ -18,10 +18,29 @@ using namespace std;
 };
 
 
+struct RegisterInfo{
+    string name;
+    string variableInside;
+    int memLoc;
+
+    RegisterInfo() : name(""), variableInside(""), memLoc(-1) {};
+};
+
+struct VariableInfo{
+    string name;
+    string regAllocated;
+    int memLoc;
+    int memLocOffset;
+    bool presentInReg;
+
+    VariableInfo() : name(""), regAllocated(""), memLoc(-1), presentInReg(false) {};
+};
+
 class FunctionDetailsTable : public FunctionTable {
     public:
-        string registers;
-        string variables;
+        int variableCnt;
+        map <string,RegisterInfo> registerTable;
+        map  <string, VariableInfo> variableTable;
         vector <string> optCode;
         FunctionDetailsTable();
         FunctionDetailsTable(FunctionTable _ft); 
@@ -44,7 +63,7 @@ struct Variable{
     Variable() : startLine(-1), endLine(-1), freq(0), reg("") {}
 };
 
-extern map <string,struct Variable> variableInfoMap;
+// extern map <string,struct Variable> variableInfoMap;
 
 
 

@@ -12,12 +12,13 @@ int main(int arc, char** argv){
             for(auto _function : functionStruct.functionTables){
                 functionDetailsMap[_function.functionName] = FunctionDetailsTable(_function);
                 vector <string> code = _function.code;
-                for(auto i : code)
-                    cout<<i<<endl;
-                cout<<endl;
+                // for(auto i : code)
+                //     cout<<i<<endl;
+                // cout<<endl;
 
                 // deadCodeRemoval should be at function level
                 deadCodeRemoval(code, _function.functionName);
+                
                
             }
         
@@ -28,7 +29,11 @@ int main(int arc, char** argv){
 
     showCallerCalllee();
     removeUnessentialFunction();
-    printFunctionDetails();
+    // printFunctionDetails();
+
+    for(auto [_functionName, _functionDetails] : functionDetailsMap ){
+        codeGenerator(_functionName);
+    }
     
     // ifstream TACFile("code.tac");
 

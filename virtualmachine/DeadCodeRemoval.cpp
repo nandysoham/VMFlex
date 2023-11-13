@@ -243,7 +243,7 @@ void printFunctionDetails(){
         for(auto i : _functionDetails.code)
             cout<<i<<endl;
 
-        cout<<"Opt code"<<endl<<endl;
+        cout<<"Opt code"<<endl<<endl<<endl;
         for(auto i : _functionDetails.optCode)
             cout<<i<<endl;
     }
@@ -255,5 +255,5 @@ void deadCodeRemoval(vector <string> &inputStream, string name){
     getBasicBlocks(inputStream, name);
     blockReachability();
     createDeadCodeOptimize(inputStream, name);
-    printBasicBlocks();
+    // printBasicBlocks();
 };

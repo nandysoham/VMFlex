@@ -17,10 +17,30 @@ using namespace std;
 
 
 // function that contains all information of a function
+
+struct RegisterInfo{
+    string name;
+    string variableInside;
+    int memLoc;
+
+    RegisterInfo() : name(""), variableInside(""), memLoc(-1) {};
+};
+
+struct VariableInfo{
+    string name;
+    string regAllocated;
+    int memLoc;
+    int memLocOffset;
+    bool presentInReg;
+
+    VariableInfo() : name(""), regAllocated(""), memLoc(-1), memLocOffset(-1), presentInReg(false) {};
+};
+
 class FunctionDetailsTable : public FunctionTable {
     public:
-        string registers;
-        string variables;
+        int variableCnt;
+        map <string,RegisterInfo> registerTable;
+        map  <string, VariableInfo> variableTable;
         vector <string> optCode;
         FunctionDetailsTable();
         FunctionDetailsTable(FunctionTable _ft); 
@@ -43,7 +63,12 @@ FunctionDetailsTable::FunctionDetailsTable(FunctionTable _ft){
 
 
     // child class params
+    this->variableCnt = 0;
     this->optCode = {};
+    this->registerTable = {};
+    this->variableTable = {};
+
+    
 }
 
 vector <BasicBlock> basicBlockCollection;       // array to collect the basic blocks
@@ -82,7 +107,7 @@ struct Variable{
     Variable() : startLine(-1), endLine(-1), freq(0), reg("") {}
 };
 
-map <string,struct Variable> variableInfoMap;
+// map <string,struct Variable> variableInfoMap;
 
 
 
