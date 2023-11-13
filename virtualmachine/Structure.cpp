@@ -29,11 +29,12 @@ struct RegisterInfo{
 struct VariableInfo{
     string name;
     string regAllocated;
+    string type;
     int memLoc;
     int memLocOffset;
     bool presentInReg;
 
-    VariableInfo() : name(""), regAllocated(""), memLoc(-1), memLocOffset(-1), presentInReg(false) {};
+    VariableInfo() : name(""), regAllocated(""), memLoc(-1),type("TEMPSTORAGE"), presentInReg(false) {};
 };
 
 class FunctionDetailsTable : public FunctionTable {
@@ -104,7 +105,8 @@ struct Variable{
     int endLine;
     int freq;
     string reg;
-    Variable() : startLine(-1), endLine(-1), freq(0), reg("") {}
+    string type;
+    Variable() : startLine(-1), endLine(-1), freq(0), reg(""), type("TEMPSTORAGE") {}
 };
 
 // map <string,struct Variable> variableInfoMap;

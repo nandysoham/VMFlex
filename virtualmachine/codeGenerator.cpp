@@ -18,9 +18,9 @@ void intializeReg(){
         "x12", "x13", "x14", "x15", "x16", "x17"
     };
 
-    RISCVReg["TempStorage"]  = TempStorage;
-    RISCVReg["TempCal"] = TempCal;
-    RISCVReg["Arg"] =  Arg;
+    RISCVReg["TEMPSTORAGE"]  = TempStorage;
+    RISCVReg["TEMPCAL"] = TempCal;
+    RISCVReg["ARG"] =  Arg;
 }
 
 
@@ -43,6 +43,7 @@ void printVariableTable(map <string, VariableInfo> _variableTableMap){
     cout<<"Registers allocated "<<endl;
     for(auto [_name, _info] : _variableTableMap){
         cout<<"Name"<<" : "<<_name<<endl;
+        cout<<"Type"<<" : "<<_info.type<<endl;
         cout<<"Allocated Register : "<<_info.regAllocated<<endl;
         cout<<"Starts :" <<variableInfoMap[_name].startLine<<endl;
         cout<<"Ends :" <<variableInfoMap[_name].endLine<<endl;
@@ -55,27 +56,36 @@ void printVariableTable(map <string, VariableInfo> _variableTableMap){
  * @brief Allocate registers for the variables in the function
  * 
  */
-void allocateRegister(string functionName){
-
-    const int STORAGE_REG_COUNT = RISCVReg["TempStorage"].size();
+void allocateRegister(string functionName, string regType){
+    cout<<"here"<<regType<<endl;
+    const int STORAGE_REG_COUNT = RISCVReg[regType].size();
     // create a graph
    
 
 
-    int variableCnt = variableInfoMap.size();
+    int variableCnt = 0;
+    for(auto [_varName, _varDetails] : variableInfoMap){
+        if(_varDetails.type == regType)
+            variableCnt++;
+    }
+
+
     vector <int> adj[variableCnt];
     vector <int> degree(variableCnt);
     map <string, int> varToIntMap;
     vector <string> intToVarMap;
     int cnt = 0;
     for(auto [_varName, _varDetails] : variableInfoMap ){
+        if(_varDetails.type != regType) continue;
+
+
         varToIntMap[_varName] = cnt++;
         intToVarMap.push_back(_varName);
     }
     // Heuristic algo to allocate
     for(auto [_varName, _varDetails] : variableInfoMap ){
         for(auto [_nVarName, _nVarDetails] : variableInfoMap){
-            if(_nVarName != _varName){
+            if(_nVarName != _varName && _nVarDetails.type == regType && _varDetails.type == regType){
                 if((_nVarDetails.endLine >= _varDetails.startLine && _nVarDetails.startLine <= _varDetails.startLine)
                 || (_nVarDetails.startLine <= _varDetails.endLine && _nVarDetails.endLine >= _varDetails.endLine)){
                     adj[varToIntMap[_varName]].push_back(varToIntMap[_nVarName]);
@@ -115,7 +125,7 @@ void allocateRegister(string functionName){
             yetToProcess.erase(ele);
 
             set <string> allReg;
-            for(auto i : RISCVReg["TempStorage"]){
+            for(auto i : RISCVReg[regType]){
                 allReg.insert(i);
             }
 
@@ -134,6 +144,7 @@ void allocateRegister(string functionName){
             struct VariableInfo _variableInfo = VariableInfo();
             _variableInfo.regAllocated = *(allReg.begin());         // This should be rightly executed;
             _variableInfo.presentInReg = true;
+            _variableInfo.type = variableInfoMap[intToVarMap[ele]].type;
             _variableTableMap[intToVarMap[ele]] = _variableInfo;
 
         }
@@ -145,6 +156,7 @@ void allocateRegister(string functionName){
             yetToProcess.erase(ele);
             struct VariableInfo _variableInfo = VariableInfo();
             _variableInfo.memLocOffset = memOffset;
+            _variableInfo.type = variableInfoMap[intToVarMap[ele]].type;
             memOffset+=4;
             _variableTableMap[intToVarMap[ele]] = _variableInfo;
 
@@ -165,11 +177,23 @@ void codeGenerator(string functionName){
     vector <string> optimizedStream = funcTable.optCode;
 
     variableInfoMap.clear();
-
-
+    set <string> params;
+    // for searching out all params
     for(int wordIndex = 0; wordIndex < optimizedStream.size(); wordIndex++){
         string line = optimizedStream[wordIndex];
         vector <string> words = processWords(line);
+        if(find(words.begin(), words.end(), "param") != words.end()){
+            int idx = find(words.begin(), words.end(), "param") - words.begin();
+            string word = words[idx + 1];
+            params.insert(word);
+        }
+    }
+
+
+    for(int wordIndex = 0; wordIndex < optimizedStream.size(); wordIndex++){
+         string line = optimizedStream[wordIndex];
+        vector <string> words = processWords(line);
+        
         if(find(words.begin(), words.end(), "=") != words.end()){
             int idx = find(words.begin(), words.end(), "=") - words.begin();
             // a = b op c
@@ -198,6 +222,8 @@ void codeGenerator(string functionName){
                 Variable newvar = Variable();
                 newvar.startLine = wordIndex;
                 newvar.endLine = wordIndex;
+                if(params.count(declared))
+                    newvar.type = "ARG";
                 variableInfoMap[declared] = newvar;
             }
 
@@ -206,6 +232,9 @@ void codeGenerator(string functionName){
                     Variable newvar = Variable();
                     newvar.startLine = wordIndex;
                     newvar.endLine = wordIndex;
+                    if(params.count(_operand))
+                        newvar.type = "ARG";
+
                     variableInfoMap[declared] = newvar;
                     cout<<"!Warning Variable "<<_operand<<" not declared \n\n";
                 }
@@ -237,6 +266,11 @@ void codeGenerator(string functionName){
         }
 
     }
+
+    cout<<"Params"<<endl;
+    for(auto i : params)
+        cout<<i<<" ";
+    cout<<endl;
     cout<<"Variables"<<endl;
     for(auto [x,y] : variableInfoMap)
         cout<<x<<" ";
@@ -247,6 +281,7 @@ void codeGenerator(string functionName){
 
     cout<<endl<<endl;
     // printVariableMap(functionName);
-    allocateRegister(functionName);
+    for(auto regType : {"TEMPSTORAGE", "ARG"})
+        allocateRegister(functionName, regType);
 
 }
