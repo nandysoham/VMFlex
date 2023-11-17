@@ -34,7 +34,7 @@ struct VariableInfo{
     int memLocOffset;
     bool presentInReg;
 
-    VariableInfo() : name(""), regAllocated(""), memLoc(-1),type("TEMPSTORAGE"), presentInReg(false) {};
+    VariableInfo() : name(""), regAllocated(""), memLoc(-1), memLocOffset(-1), type("TEMPSTORAGE"), presentInReg(false) {};
 };
 
 class FunctionDetailsTable : public FunctionTable {
@@ -72,3 +72,12 @@ struct Variable{
 //  ---------------- RISC - V Specific ---------------------- //
 extern map <string, vector <string> > RISCVReg;
 extern set <string> operators;
+extern map <string, string> binaryOpMap;
+extern map <string, string> iBinaryOpMap;
+
+// this allocation is just heap
+#define FUNCTION_STACK_SIZE 1000
+#define NET_STACK_SIZE 1000000
+extern int sp;
+extern map <string, int> functionHeapMemoryMap; 
+extern vector <string> assemblyCode;

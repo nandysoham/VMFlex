@@ -1,8 +1,10 @@
 #include "driver.h"
 #include "DeadCodeRemoval.h"
-#include "codeGenerator.h"
+#include "registerAllocator.h"
 #include <string>
 #include "Structure.h"
+#include "codeGenerator.h"
+
 
 int main(int arc, char** argv){
     parser();
@@ -32,7 +34,39 @@ int main(int arc, char** argv){
     // printFunctionDetails();
 
     for(auto [_functionName, _functionDetails] : functionDetailsMap ){
+        registerAllocator(_functionName);
+    }
+
+
+
+    bool isEnoughMemory = memoryInitializer();
+    if(!isEnoughMemory){
+        cout<<"Not enough Memory to allocate! Increase Memory stack size"<<endl;
+        return EXIT_FAILURE;
+    }
+    preProcessAssembly();
+    // actual code
+    codeGenerator("main");
+    for(auto [_functionName, _functionDetails] : functionDetailsMap ){
+        if(_functionName == "main") continue;
+        cout<<_functionName<<endl;
+        map <string, VariableInfo> mp= _functionDetails.variableTable;
+        cout<<"size "<<mp.size()<<endl;
         codeGenerator(_functionName);
+    }
+
+
+    ofstream assemblyFile;
+    assemblyFile.open("assembly.asm", std::ios::out);
+
+    if (!assemblyFile.is_open()) {
+        std::cerr << "Error opening assemblyFile" << std::endl;
+        return 1;
+    }
+
+    
+    for(auto i : assemblyCode){
+        assemblyFile<<i<<endl;
     }
     
     // ifstream TACFile("code.tac");
@@ -55,6 +89,6 @@ int main(int arc, char** argv){
     // TACFile.close();
    
     // deadCodeRemoval(inputStream);
-    // codeGenerator();
+    // registerAllocator();
     return EXIT_SUCCESS;
 }

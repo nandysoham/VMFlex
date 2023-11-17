@@ -1,262 +1,330 @@
-fi is called by main, 
+fn1 is called by main, main, 
 Functions that need to be removed 
-f soham 
-Generating code for fi
-!Warning Variable c_3 not declared 
 
-!Warning Variable a_3 not declared 
+Generating code for fn1
+!Warning Variable y_2 not declared 
 
-!Warning Variable b_3 not declared 
-
-!Warning Variable lal_3 not declared 
-
-!Warning Variable c_3 not declared 
-
-Params
+!Warning Variable x_2 not declared 
 
 Variables
-_t10_3 _t11_3 _t12_3 _t13_3 _t14_3 _t15_3 _t16_3 _t17_3 _t9_3 c_0_3 
-label_8:
-_t9_3 = #10
-c_0_3 = _t9_3
-memory c_3 _t9_3 #4
-_t10_3 = #7
-_t11_3 = _t10_3 * #4
-_t12_3 = c_3 + _t11_3
-_t13_3 = a_3 + b_3
-_t14_3 = _t13_3 + lal_3
-*_t12_3 = _t14_3
-_t15_3 = #7
-_t16_3 = _t15_3 * #4
-_t17_3 = c_3 + _t16_3
-Return *_t17_3
-
-
-hereTEMPSTORAGE
-Total reg available 15
-Degrees 
-1 2 1 1 1 1 2 1 1 1 
-Registers allocated 
-Name : _t10_3
-Type : TEMPSTORAGE
-Allocated Register : x18
-Starts :4
-Ends :5
-
-Name : _t11_3
-Type : TEMPSTORAGE
-Allocated Register : x19
-Starts :5
-Ends :6
-
-Name : _t12_3
-Type : TEMPSTORAGE
-Allocated Register : x18
-Starts :6
-Ends :6
-
-Name : _t13_3
-Type : TEMPSTORAGE
-Allocated Register : x18
-Starts :7
-Ends :8
-
-Name : _t14_3
-Type : TEMPSTORAGE
-Allocated Register : x19
-Starts :8
-Ends :9
-
-Name : _t15_3
-Type : TEMPSTORAGE
-Allocated Register : x18
-Starts :10
-Ends :11
-
-Name : _t16_3
-Type : TEMPSTORAGE
-Allocated Register : x19
-Starts :11
-Ends :12
-
-Name : _t17_3
-Type : TEMPSTORAGE
-Allocated Register : x18
-Starts :12
-Ends :12
-
-Name : _t9_3
-Type : TEMPSTORAGE
-Allocated Register : x18
-Starts :1
-Ends :2
-
-Name : c_0_3
-Type : TEMPSTORAGE
-Allocated Register : x19
-Starts :2
-Ends :2
-
-hereARG
-Total reg available 6
-Degrees 
-
-Registers allocated 
-Generating code for main
-!Warning Variable r_2 not declared 
-
-!Warning Variable ReturnVal not declared 
-
-Params
-_t22_2 _t23_2 
-Variables
-_t1_2 _t21_2 _t22_2 _t23_2 _t24_2 _t25_2 _t2_3 _t3_3 _t4_3 _t5_3 _t6_3 _t7_3 _t8_2 j_2 k_2 lal_3 r_2 
+_t1_2 _t2_2 _t3_3 _t4_3 c_2 x_2 y_2 
+label_1:
+_t1_2 = y_2 + x_2
+c_2 = _t1_2
+_t2_2 = y_2 < x_2
+if ( _t2_2 == #0 ) goto label_2
+_t3_3 = #1
+_t4_3 = y_2 + _t3_3
+y_2 = _t4_3
+goto label_3
+label_2:
 label_3:
-_t1_2 = #1
-k_2 = _t1_2
-_t2_3 = #1
-k_2 = _t2_3
-label_4:
-_t3_3 = #2
-_t4_3 = k_2 < _t3_3
-if ( _t4_3 == #0 ) goto label_7
-goto label_5
-label_6:
-_t5_3 = k_2
-k_2 = k_2 + #1
-goto label_4
-label_5:
-_t6_3 = #2
-lal_3 = _t6_3
-_t7_3 = r_2
-r_2 = r_2 + #1
-goto label_6
-label_7:
-_t8_2 = #3
-lal_3 = _t8_2
-_t21_2 = #1
-j_2 = _t21_2
-FunctionCall fi
-_t22_2 = #0
-param _t22_2
-_t23_2 = #1
-param _t23_2
-call label_8
-label_9:
-_t24_2 = ReturnVal
-_t25_2 = #0
-Return _t25_2
+Return c_2
 
 
 hereTEMPSTORAGE
 Total reg available 15
 Degrees 
-1 1 0 0 0 1 1 0 1 0 0 1 5 1 0 
+3 1 2 2 1 4 6 
 Registers allocated 
 Name : _t1_2
 Type : TEMPSTORAGE
 Allocated Register : x18
+Mem initialized :-1
 Starts :1
 Ends :2
 
-Name : _t21_2
+Name : _t2_2
 Type : TEMPSTORAGE
 Allocated Register : x18
-Starts :23
-Ends :24
-
-Name : _t24_2
-Type : TEMPSTORAGE
-Allocated Register : x18
-Starts :32
-Ends :32
-
-Name : _t25_2
-Type : TEMPSTORAGE
-Allocated Register : x18
-Starts :33
-Ends :33
-
-Name : _t2_3
-Type : TEMPSTORAGE
-Allocated Register : x18
+Mem initialized :-1
 Starts :3
-Ends :4
+Ends :3
 
 Name : _t3_3
 Type : TEMPSTORAGE
 Allocated Register : x18
-Starts :6
-Ends :7
+Mem initialized :-1
+Starts :5
+Ends :6
 
 Name : _t4_3
 Type : TEMPSTORAGE
-Allocated Register : x20
-Starts :7
+Allocated Register : x19
+Mem initialized :-1
+Starts :6
 Ends :7
 
-Name : _t5_3
+Name : c_2
 Type : TEMPSTORAGE
-Allocated Register : x18
-Starts :11
-Ends :11
-
-Name : _t6_3
-Type : TEMPSTORAGE
-Allocated Register : x18
-Starts :15
-Ends :16
-
-Name : _t7_3
-Type : TEMPSTORAGE
-Allocated Register : x18
-Starts :17
-Ends :17
-
-Name : _t8_2
-Type : TEMPSTORAGE
-Allocated Register : x18
-Starts :21
-Ends :22
-
-Name : j_2
-Type : TEMPSTORAGE
-Allocated Register : x19
-Starts :24
-Ends :24
-
-Name : k_2
-Type : TEMPSTORAGE
-Allocated Register : x19
+Allocated Register : x21
+Mem initialized :-1
 Starts :2
-Ends :12
+Ends :2
 
-Name : lal_3
+Name : x_2
 Type : TEMPSTORAGE
 Allocated Register : x19
-Starts :16
-Ends :16
+Mem initialized :-1
+Starts :1
+Ends :3
 
-Name : r_2
+Name : y_2
 Type : TEMPSTORAGE
-Allocated Register : x18
-Starts :18
-Ends :18
+Allocated Register : x20
+Mem initialized :-1
+Starts :1
+Ends :6
 
 hereARG
 Total reg available 6
 Degrees 
-0 0 
+
 Registers allocated 
-Name : _t22_2
-Type : ARG
-Allocated Register : x12
-Starts :26
-Ends :26
+Name : _t1_2
+Type : TEMPSTORAGE
+Allocated Register : x18
+Mem initialized :-1
+Starts :1
+Ends :2
 
-Name : _t23_2
-Type : ARG
-Allocated Register : x12
-Starts :28
-Ends :28
+Name : _t2_2
+Type : TEMPSTORAGE
+Allocated Register : x18
+Mem initialized :-1
+Starts :3
+Ends :3
 
+Name : _t3_3
+Type : TEMPSTORAGE
+Allocated Register : x18
+Mem initialized :-1
+Starts :5
+Ends :6
+
+Name : _t4_3
+Type : TEMPSTORAGE
+Allocated Register : x19
+Mem initialized :-1
+Starts :6
+Ends :7
+
+Name : c_2
+Type : TEMPSTORAGE
+Allocated Register : x21
+Mem initialized :-1
+Starts :2
+Ends :2
+
+Name : x_2
+Type : TEMPSTORAGE
+Allocated Register : x19
+Mem initialized :-1
+Starts :1
+Ends :3
+
+Name : y_2
+Type : TEMPSTORAGE
+Allocated Register : x20
+Mem initialized :-1
+Starts :1
+Ends :6
+
+Generating code for main
+!Warning Variable ReturnVal not declared 
+
+Variables
+ReturnVal _t10_2 _t5_2 _t6_2 _t7_2 _t8_2 _t9_2 a_2 b_2 c_2 d_2 
+label_4:
+_t5_2 = #1
+a_2 = _t5_2
+_t6_2 = #2
+b_2 = _t6_2
+FunctionCall fn1
+param a_2
+param b_2
+call label_1
+label_5:
+_t7_2 = ReturnVal
+_t8_2 = #3
+c_2 = _t8_2
+_t9_2 = #4
+d_2 = _t9_2
+FunctionCall fn1
+param d_2
+param c_2
+call label_1
+label_6:
+_t10_2 = ReturnVal
+
+
+hereTEMPSTORAGE
+Total reg available 15
+Degrees 
+6 1 1 1 1 1 1 1 1 1 1 
+Registers allocated 
+Name : ReturnVal
+Type : TEMPSTORAGE
+Allocated Register : x18
+Mem initialized :-1
+Starts :10
+Ends :20
+
+Name : _t10_2
+Type : TEMPSTORAGE
+Allocated Register : x19
+Mem initialized :-1
+Starts :20
+Ends :20
+
+Name : _t5_2
+Type : TEMPSTORAGE
+Allocated Register : x18
+Mem initialized :-1
+Starts :1
+Ends :2
+
+Name : _t6_2
+Type : TEMPSTORAGE
+Allocated Register : x18
+Mem initialized :-1
+Starts :3
+Ends :4
+
+Name : _t7_2
+Type : TEMPSTORAGE
+Allocated Register : x19
+Mem initialized :-1
+Starts :10
+Ends :10
+
+Name : _t8_2
+Type : TEMPSTORAGE
+Allocated Register : x19
+Mem initialized :-1
+Starts :11
+Ends :12
+
+Name : _t9_2
+Type : TEMPSTORAGE
+Allocated Register : x19
+Mem initialized :-1
+Starts :13
+Ends :14
+
+Name : a_2
+Type : TEMPSTORAGE
+Allocated Register : x19
+Mem initialized :-1
+Starts :2
+Ends :2
+
+Name : b_2
+Type : TEMPSTORAGE
+Allocated Register : x19
+Mem initialized :-1
+Starts :4
+Ends :4
+
+Name : c_2
+Type : TEMPSTORAGE
+Allocated Register : x20
+Mem initialized :-1
+Starts :12
+Ends :12
+
+Name : d_2
+Type : TEMPSTORAGE
+Allocated Register : x20
+Mem initialized :-1
+Starts :14
+Ends :14
+
+hereARG
+Total reg available 6
+Degrees 
+
+Registers allocated 
+Name : ReturnVal
+Type : TEMPSTORAGE
+Allocated Register : x18
+Mem initialized :-1
+Starts :10
+Ends :20
+
+Name : _t10_2
+Type : TEMPSTORAGE
+Allocated Register : x19
+Mem initialized :-1
+Starts :20
+Ends :20
+
+Name : _t5_2
+Type : TEMPSTORAGE
+Allocated Register : x18
+Mem initialized :-1
+Starts :1
+Ends :2
+
+Name : _t6_2
+Type : TEMPSTORAGE
+Allocated Register : x18
+Mem initialized :-1
+Starts :3
+Ends :4
+
+Name : _t7_2
+Type : TEMPSTORAGE
+Allocated Register : x19
+Mem initialized :-1
+Starts :10
+Ends :10
+
+Name : _t8_2
+Type : TEMPSTORAGE
+Allocated Register : x19
+Mem initialized :-1
+Starts :11
+Ends :12
+
+Name : _t9_2
+Type : TEMPSTORAGE
+Allocated Register : x19
+Mem initialized :-1
+Starts :13
+Ends :14
+
+Name : a_2
+Type : TEMPSTORAGE
+Allocated Register : x19
+Mem initialized :-1
+Starts :2
+Ends :2
+
+Name : b_2
+Type : TEMPSTORAGE
+Allocated Register : x19
+Mem initialized :-1
+Starts :4
+Ends :4
+
+Name : c_2
+Type : TEMPSTORAGE
+Allocated Register : x20
+Mem initialized :-1
+Starts :12
+Ends :12
+
+Name : d_2
+Type : TEMPSTORAGE
+Allocated Register : x20
+Mem initialized :-1
+Starts :14
+Ends :14
+
+fn1
+size 7
+fn1
+7
+fn1
+7

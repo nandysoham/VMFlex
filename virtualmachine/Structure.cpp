@@ -34,7 +34,7 @@ struct VariableInfo{
     int memLocOffset;
     bool presentInReg;
 
-    VariableInfo() : name(""), regAllocated(""), memLoc(-1),type("TEMPSTORAGE"), presentInReg(false) {};
+    VariableInfo() : name(""), regAllocated(""), memLoc(-1), memLocOffset(-1), type("TEMPSTORAGE"), presentInReg(false) {};
 };
 
 class FunctionDetailsTable : public FunctionTable {
@@ -117,9 +117,36 @@ struct Variable{
 
 //  ---------------- RISC - V Specific ---------------------- //
 map <string, vector <string> > RISCVReg;
+// set <string> operators;
+// map <string, string> binaryOpMap;
+// map <string, string> iBinaryOpMap;
 set <string> operators = {
     "+", "-", "*", "/",
     "==", "<", ">", "<=", ">=", "!=",
     "^", "&", "|", "&&", "||",
     ">>", "<<"
 };
+
+ map <string, string> binaryOpMap = {
+    {"+"    ,   "add"},
+    {"-"    ,   "sub"},
+    {"*"    ,   "mul"},
+    {"/"    ,   "div"},
+    {"^"    ,   "xor"},
+    {"&"    ,   "and"},
+    {"|"    ,   "or"},
+    {">>"   ,   "shr"},
+    {"<<"   ,   "shl"}
+ };
+
+
+ map <string, string> iBinaryOpMap = {
+    {"+"    ,   "addi"},
+    {"-"    ,   "subi"}
+ };
+#define FUNCTION_STACK_SIZE 1000
+#define NET_STACK_SIZE 1000000
+
+int sp = NET_STACK_SIZE;
+map <string, int> functionHeapMemoryMap; 
+vector <string> assemblyCode;
