@@ -1,11 +1,11 @@
 # Compiler settings
 CXX = g++
-CXXFLAGS = -O2 -std=c++17 -Wall
+CXXFLAGS = -O2 -std=c++17 
 # DEBUGFLAG = -DDEBUG
  
 
 # Source files
-CPP_SOURCES = driver.cpp DeadCodeRemoval.cpp registerAllocator.cpp codeGenerator.cpp codeGenHelper.cpp Structure.cpp
+CPP_SOURCES = driver.cpp DeadCodeRemoval.cpp registerAllocator.cpp codeGenerator.cpp codeGenHelper.cpp Structure.cpp memHelper.cpp
 OBJECTS = $(CPP_SOURCES:.cpp=.o) 
 
 # Final target

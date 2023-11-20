@@ -136,13 +136,20 @@ set <string> operators = {
     {"&"    ,   "and"},
     {"|"    ,   "or"},
     {">>"   ,   "shr"},
-    {"<<"   ,   "shl"}
+    {"<<"   ,   "shl"},
+    {"<"    ,   "slt"},
+    {">"    ,   "sgt"},
+    {"<="   ,   "sleq"},
+    {">="   ,   "sge"},
+    {"=="   ,   "seq"}
  };
 
 
  map <string, string> iBinaryOpMap = {
     {"+"    ,   "addi"},
-    {"-"    ,   "subi"}
+    {"-"    ,   "subi"},
+    {"*"    ,   "muli"},
+    {"/"    ,   "divi"}   
  };
 #define FUNCTION_STACK_SIZE 1000
 #define NET_STACK_SIZE 1000000

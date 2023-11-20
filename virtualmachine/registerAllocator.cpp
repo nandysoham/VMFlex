@@ -1,9 +1,12 @@
 #include <iostream>
 #include "Structure.h"
 #include "registerAllocator.h"
-
+#include "memHelper.h"
 map <string,struct Variable> variableInfoMap;
-
+/**
+ * @brief Initializes the register contents
+ * 
+ */
 void intializeReg(){
     vector <string> TempStorage = {
          "x7", "x18", "x19", "x20",
@@ -38,6 +41,11 @@ void intializeReg(){
 }
 
 
+/**
+ * @brief Debugs the contents of a variable going by name
+ * 
+ * @param name 
+ */
 void printVariableMap(string name){
     cout<<"FUNCTION "<<name<<endl<<endl;
     
@@ -52,7 +60,11 @@ void printVariableMap(string name){
     }
 }
 
-
+/**
+ * @brief Pring All details of all the variables present in the function
+ * 
+ * @param _variableTableMap Map of Info of variable stored against name
+ */
 void printVariableTable(map <string, VariableInfo> _variableTableMap){
     cout<<"Registers allocated "<<endl;
     for(auto [_name, _info] : _variableTableMap){
@@ -188,6 +200,12 @@ void allocateRegister(string functionName, string regType){
 
 }
 
+
+/**
+ * @brief Driver Function for register allocation
+ * 
+ * @param functionName Function name whose allocation needs to be done
+ */
 void registerAllocator(string functionName){
     cout<<"Generating code for "<<functionName<<endl;
     intializeReg();
@@ -213,22 +231,104 @@ void registerAllocator(string functionName){
          string line = optimizedStream[wordIndex];
         vector <string> words = processWords(line);
         
+        // Syntax yet to be verified
+        // Syntax : Memory x #size
+        // Assumption : Memory cannot be allocated to a *
+        if(find(words.begin(), words.end(), "Memory") != words.end()){
+            int idx = find(words.begin(), words.end(), "Memory") - words.begin();
+            string declared = words[idx + 1];
+            
+            if(variableInfoMap.count(declared) == 0){
+                Variable newvar = Variable();
+                newvar.startLine = wordIndex;
+                newvar.endLine = wordIndex;
+                variableInfoMap[declared] = newvar;
+            }
+            else{
+                variableInfoMap[declared].endLine = wordIndex;
+            }
+
+            continue;
+        }
+
+
+        // Syntax if ( ) goto
+        if(find(words.begin(), words.end(), "if") != words.end()){
+            int idx = find(words.begin(), words.end(), "if") - words.begin();
+            vector <string> identifiers;
+            for(int i = idx +1 ; i < words.size(); i++){
+                string token = words[i];
+                if(token.substr(0,4) == "goto")
+                    break;
+                if(token[0] != '#' && token != "(" && token != ")" && operators.count(token) == 0){
+                    identifiers.push_back(token);
+                }
+            }
+            for(auto _identifier : identifiers){
+                if(_identifier[0] == '*') 
+                    _identifier = extractNameFromPointer(_identifier);
+
+                if(variableInfoMap.count(_identifier) == 0){
+                    Variable newvar = Variable();
+                    newvar.startLine = wordIndex;
+                    newvar.endLine = wordIndex;
+                    variableInfoMap[_identifier] = newvar;
+                }
+                else{
+                    variableInfoMap[_identifier].endLine = wordIndex;
+                }
+            }
+
+            continue;
+
+        }
+
+        // Syntax : Return var
+        if(find(words.begin(), words.end(), "Return") != words.end()){
+            int idx = find(words.begin(), words.end(), "Return") - words.begin();
+            // a = b op c
+            string declared = words[idx + 1];
+
+            //  ASSUMPTION: CANNOT RETURN A NUMBER
+            if(declared[0] == '*')
+                declared = extractNameFromPointer(declared);
+            
+
+            // now check
+            if(variableInfoMap.count(declared) == 0){
+                Variable newvar = Variable();
+                newvar.startLine = wordIndex;
+                newvar.endLine = wordIndex;
+                variableInfoMap[declared] = newvar;
+            }
+            else{
+                variableInfoMap[declared].endLine = wordIndex;
+            }
+
+            continue;
+        }
+
+
+        // Syntax: Assignment or Operation
         if(find(words.begin(), words.end(), "=") != words.end()){
             int idx = find(words.begin(), words.end(), "=") - words.begin();
             // a = b op c
             string declared = words[idx - 1];
-            if(declared[0] == '*') declared = declared.substr(1);
-            vector <string> operands;
+            if(declared[0] == '*') 
+                declared = extractNameFromPointer(declared);
+
+
+            vector <string> identifiers;
             vector <string> constants;
             for(int i = idx + 1; i< words.size(); i++){
                 if(operators.count(words[i]) == 0){
                     
                     if(words[i][0] != '#'){
                         if(words[i][0] == '*'){
-                            operands.push_back(words[i].substr(1));
+                            identifiers.push_back(extractNameFromPointer(words[i]));
                         }
                         else
-                            operands.push_back(words[i]);
+                            identifiers.push_back(words[i]);
                     }
                     else{
                         constants.push_back(words[i].substr(1));
@@ -246,8 +346,11 @@ void registerAllocator(string functionName){
                 //     newvar.type = "ARG";
                 variableInfoMap[declared] = newvar;
             }
+            else{
+                variableInfoMap[declared].endLine = wordIndex;
+            }
 
-            for(auto _operand : operands){
+            for(auto _operand : identifiers){
 
                 if(variableInfoMap.find(_operand) == variableInfoMap.end()){
                     Variable newvar = Variable();
@@ -261,32 +364,20 @@ void registerAllocator(string functionName){
                 }
                 else{
                     variableInfoMap[_operand].endLine = wordIndex;
-                    variableInfoMap[_operand].freq++;
+                    // variableInfoMap[_operand].freq++;
                 }
             }
 
         }
-        // Syntax : Return var
-        if(find(words.begin(), words.end(), "Return") != words.end()){
-            int idx = find(words.begin(), words.end(), "Return") - words.begin();
-            // a = b op c
-            string declared = words[idx + 1];
-
-            //  ASSUMPTION CANNOT RETURN A NUMBER
-            if(declared[0] == '*')
-                declared = declared.substr(1);
-            
-
-            // now check
-            if(variableInfoMap.count(declared) == 0){
-                Variable newvar = Variable();
-                newvar.startLine = wordIndex;
-                newvar.endLine = wordIndex;
-                variableInfoMap[declared] = newvar;
-            }
-        }
+        
 
     }
+
+    //  Syntax if (     )   goto 
+    //  Syntax Memory x #v
+    
+
+    
 
     // cout<<"Params"<<endl;
     // for(auto i : params)
@@ -302,7 +393,7 @@ void registerAllocator(string functionName){
 
     cout<<endl<<endl;
     // printVariableMap(functionName);
-    for(auto regType : {"TEMPSTORAGE", "ARG"})
+    for(auto regType : {"TEMPSTORAGE"})
         allocateRegister(functionName, regType);
 
 }
