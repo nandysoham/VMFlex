@@ -41,22 +41,23 @@ void fetchParams(string funcName){
 
         // initializing heap address at O(Main)
         comment("Initializing Heap Address at First offset of main");
-         code = "\t li \t\t x7 ,  x000";
+        string reg = RISCVReg["TEMPSTORAGE"][0];
+         code = "\t li \t\t "+ reg + ",  x000";
         assemblyCode.push_back(code);
         int addr = functionHeapMemoryMap[funcName];
         cout<<"Main starts at"<<addr<<endl;
         cout<<"sp is at "<<sp<<endl;
         int dist = (addr - sp)/4;
-        code = "\t sw \t\t x7 \t" + getOffsetMemoryInt(dist);
+        code = "\t sw \t\t" + reg + "\t" + getOffsetMemoryInt(dist);
         assemblyCode.push_back(code);
 
 
         // initializing return address at 1(Main)
         comment("Initializing Return Address at Second offset of main");
-        code = "\t li \t\t x7 ,  x000";
+        code = "\t li \t\t "+ reg+ ",  x000";
         assemblyCode.push_back(code);
         dist-=1;
-        code = "\t sw \t\t x7, \t" + getOffsetMemoryInt(dist);
+        code = "\t sw \t\t " + reg + ", \t" + getOffsetMemoryInt(dist);
         assemblyCode.push_back(code);
         return;
     }
@@ -72,6 +73,53 @@ void fetchParams(string funcName){
     }
 } 
 
+/**
+* @brief Initializes the Register Table for a particular function
+*/
+void initializeRegisterTable(string funcName){
+    for(auto [_registype, _regArray] : RISCVReg){
+        for(auto j : _regArray){
+            functionDetailsMap[funcName].registerTable[j] = RegisterInfo();
+            functionDetailsMap[funcName].registerTable[j].name = j;
+            functionDetailsMap[funcName].registerTable[j].type = _registype;
+        }
+    }
+}
+
+
+/**
+*   @brief Printing the register table
+*/
+void printRegisterTable(string funcName){
+    cout<<"Printing Register Table for "<<funcName<<endl;
+    cout<<"--------------------------------------------------------\n";
+    for(auto i : functionDetailsMap[funcName].registerTable){
+        cout<<i.first<<" : "<<endl;
+        cout<<endl;
+        cout<<"Type : "<<i.second.type<<endl;
+        cout<<"Value : "<<i.second.variableInside<<endl;
+        cout<<endl;
+    }
+    
+    cout<<"--------------------------------------------------------\n";
+
+}
+
+
+void initializeMemoryForSpilling(string funcName){
+    int cnt = 0;
+    for(auto [_varName, _varDetails] : functionDetailsMap[funcName].variableTable){
+        if(_varDetails.memLocOffset != -1){
+            functionDetailsMap[funcName].variableTable[_varName].memLoc = sp + cnt;
+            cnt++;
+        }
+    }
+
+    // increase the stack pointer by this value
+    if(cnt){
+        comment("Allocating space for variables ");
+    }
+}
 
 /**
  * @brief Creates the assembly code for the function
@@ -79,9 +127,12 @@ void fetchParams(string funcName){
  * @param funcName Name of the function  
  */
 void codeGenerator(string funcName){
-    
+    assemblyCode.push_back("\n\n");
+    comment("Function " + funcName);
+    assemblyCode.push_back("\n");
+    initializeRegisterTable(funcName);
     fetchParams(funcName);
-
+    printRegisterTable(funcName);
     FunctionDetailsTable _functionDetailsTable = functionDetailsMap[funcName];
     vector <string> optimizedStream = _functionDetailsTable.optCode;
 
@@ -90,7 +141,7 @@ void codeGenerator(string funcName){
          string line = optimizedStream[wordIndex];
         vector <string> words = processWords(line);
 
-        // a = b op types
+        // a = b op c types
         if(find(words.begin(), words.end(), "=") != words.end()){
             int idx = find(words.begin(), words.end(), "=") - words.begin();
             string var1 = words[idx - 1];
@@ -114,6 +165,7 @@ void codeGenerator(string funcName){
 
                 if(!integral){
                     arithOpCode(
+                    funcName,
                     getVarToRegister(var1, funcName, 0), 
                     getVarToRegister(vars[0], funcName, 1), 
                     getVarToRegister(vars[1], funcName, 2),
@@ -121,14 +173,54 @@ void codeGenerator(string funcName){
                 }
                 else{
                     arithOpCode(
+                    funcName,
                     getVarToRegister(var1, funcName, 0), 
                     getVarToRegister(vars[0], funcName, 1), 
                     vars[1],
                      op, integral);
                 }
             }
+            else if(op == "" && vars.size() == 2 && vars[0] == "minus"){
+                bool integral = false;
+                if(vars[1][0] == '#'){
+                    integral = true;
+                    vars[1] = vars[1].substr(1);
+                }
+
+                if(!integral){
+                    arithOpCode(
+                    funcName,
+                    getVarToRegister(var1, funcName, 0), 
+                    RISCVReg["ZERO"][0], 
+                    getVarToRegister(vars[1], funcName, 2),
+                    "-", integral);
+                }
+                else{
+                    arithOpCode(
+                    funcName,
+                    getVarToRegister(var1, funcName, 0), 
+                    RISCVReg["ZERO"][0],
+                    vars[1],
+                     "-", integral);
+                }
+            }
+            else if(op == "" && vars.size() == 1){
+                if(vars[0][0] != '#'){
+                    assignOpCode(funcName, getVarToRegister(var1, funcName, 0) ,
+                         getVarToRegister(vars[0], funcName, 1),
+                         false
+                    );
+                }
+                else{
+                    assignOpCode(funcName, getVarToRegister(var1, funcName, 0) ,
+                         vars[0].substr(1),
+                         true
+                    );
+                    
+                }
+            } 
             else{
-               assemblyCode.push_back("\t" + line); 
+               assemblyCode.push_back("\t Error " + line); 
             }
         }
         else{

@@ -12,3 +12,6 @@ bool memoryInitializer();
 void codeGenerator(string funcName);
 void preProcessAssembly();
 void comment(string s);
+
+void initializeRegisterTable(string funcName);
+void printRegisterTable(string funcName);

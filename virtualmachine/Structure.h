@@ -22,8 +22,8 @@ struct RegisterInfo{
     string name;
     string variableInside;
     int memLoc;
-
-    RegisterInfo() : name(""), variableInside(""), memLoc(-1) {};
+    string type;
+    RegisterInfo() : name(""), variableInside(""), memLoc(-1), type("") {};
 };
 
 struct VariableInfo{
@@ -81,3 +81,4 @@ extern map <string, string> iBinaryOpMap;
 extern int sp;
 extern map <string, int> functionHeapMemoryMap; 
 extern vector <string> assemblyCode;
+extern string HEAP;

@@ -8,11 +8,11 @@ map <string,struct Variable> variableInfoMap;
  * 
  */
 void intializeReg(){
-    vector <string> TempStorage = {
-         "x7", "x18", "x19", "x20",
-        "x21", "x22", "x23", "x24", "x25", "x26", "x27",
-        "x28", "x29", "x30", "x31"
-        };
+    vector <string> TempStorage = {"x7", "x8"};
+        //  "x7", "x18", "x19", "x20",
+        // "x21", "x22", "x23", "x24", "x25", "x26", "x27",
+        // "x28", "x29", "x30", "x31"
+        // };
 
     vector <string> TempCal = {
         "x4", "x5", "x6" 
@@ -31,13 +31,23 @@ void intializeReg(){
         "x1"
     };
 
-    // All arguments are stored in memory
+    // Saved Registers
+    vector <string> Saved = {
+        "x8", "x9", "x10", "x11"
+    };
 
+
+    vector <string> Zero = {
+        "x0"
+    };
+    // All arguments are stored in memory
+    RISCVReg["ZERO"] = Zero;
     RISCVReg["TEMPSTORAGE"]  = TempStorage;
     RISCVReg["TEMPCAL"] = TempCal;
     RISCVReg["ARG"] =  Arg;
     RISCVReg["RETVALUE"] = RetValue;
     RISCVReg["RETADDRESS"] = Ra;
+    RISCVReg["SAVED"] = Saved;
 }
 
 
@@ -138,9 +148,26 @@ void allocateRegister(string functionName, string regType){
     cout<<endl;
 
     int memOffset =0;
+
+
+    // there is some register yet to pre processed
     while(yetToProcess.size() > 0){
+        // cout<<"yet to process"<<endl;
+        // for(auto i : yetToProcess){
+        //     cout<<i<<" ";
+        // }
+        // cout<<endl;
+
+        // cout<<"Degrees"<<endl;
+        // for(auto i : degree){
+        //     cout<<i<<" ";
+        // }
+
+        // cout<<endl;
+
         for(int i =0; i < variableCnt; i++){
-            if(degree[i] < STORAGE_REG_COUNT){
+            // put in only those which are yet to be processed and their degrees are < capacity
+            if(degree[i] < STORAGE_REG_COUNT && yetToProcess.count(i) > 0){
                 processQueue.push(i);
             }
         }
@@ -150,24 +177,29 @@ void allocateRegister(string functionName, string regType){
             int ele = processQueue.front();
             processQueue.pop();
             yetToProcess.erase(ele);
-
+            
             set <string> allReg;
             for(auto i : RISCVReg[regType]){
                 allReg.insert(i);
             }
 
+            
             // assigning a register
             for(auto _nReg : adj[ele]){
                 if(_variableTableMap.find(intToVarMap[_nReg]) != _variableTableMap.end()){
                     allReg.erase(_variableTableMap[intToVarMap[_nReg]].regAllocated);
+                    
                 }
 
-                degree[_nReg]--;
-                if(degree[_nReg] < STORAGE_REG_COUNT && yetToProcess.count(_nReg) > 0){
-                    processQueue.push(_nReg);
-                }
+                // degree[_nReg]--;
+                // if(degree[_nReg] < STORAGE_REG_COUNT && yetToProcess.count(_nReg) > 0){
+                //     processQueue.push(_nReg);
+                // }
             }
 
+            
+
+            
             struct VariableInfo _variableInfo = VariableInfo();
             _variableInfo.regAllocated = *(allReg.begin());         // This should be rightly executed;
             _variableInfo.presentInReg = true;
@@ -176,6 +208,7 @@ void allocateRegister(string functionName, string regType){
 
         }
 
+        
         // now allocate the other vertices
         // spill the first register
         if(yetToProcess.size() > 0){

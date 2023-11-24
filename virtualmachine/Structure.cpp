@@ -22,8 +22,8 @@ struct RegisterInfo{
     string name;
     string variableInside;
     int memLoc;
-
-    RegisterInfo() : name(""), variableInside(""), memLoc(-1) {};
+    string type;
+    RegisterInfo() : name(""), variableInside(""), memLoc(-1), type("") {};
 };
 
 struct VariableInfo{
@@ -157,3 +157,4 @@ set <string> operators = {
 int sp = NET_STACK_SIZE;
 map <string, int> functionHeapMemoryMap; 
 vector <string> assemblyCode;
+string HEAP = "HP";

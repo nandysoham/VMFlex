@@ -1,4 +1,5 @@
 #include "codeGenerator.h"
+#include "codeGenHelper.h"
 #include "Structure.h"
 
 /**
@@ -32,7 +33,9 @@ string getOffsetMemoryInt(int step=1){
  * @param reg Destination Register
  * @param step the no of steps(/4) to get up
  */
-void loadIntoRegFromMem(string reg, int step){
+void loadIntoRegFromMem(string funcName, string reg, int step){
+    // clearing existing details of reg
+    clearExistingRegister(funcName, reg);
     string code = "\t lw \t " + reg + getOffsetMemoryInt(step);
     assemblyCode.push_back(code);
 }
@@ -41,13 +44,30 @@ void loadIntoRegFromMem(string reg, int step){
 /**
  * @brief Copy content of a register to another
  * 
+ * @param funcName Name of the function
  * @param sourceReg Source Register
  * @param destReg Destination Register
  */
-void loadIntoRegFromReg(string sourceReg, string destReg){
+void loadIntoRegFromReg(string funcName, string sourceReg, string destReg){
+    string val = functionDetailsMap[funcName].registerTable[sourceReg].variableInside;
+
+    insertDetailsIntoRegisterTable(funcName, destReg, val);
+    clearExistingRegister(funcName, destReg);
+
+
     string code = "\t mv \t\t" + destReg + "\t" + sourceReg;
     assemblyCode.push_back(code);
 }
+
+
+void loadValueIntoRegister(string funcName,string reg, string val){
+    clearExistingRegister(funcName, reg);
+    insertDetailsIntoRegisterTable(funcName, reg, val);
+
+    string code = "\t li \t\t"+reg+"\t "+val;
+    assemblyCode.push_back(code);
+}
+
 
 
 /**
@@ -78,7 +98,7 @@ string getVarToRegister(string var, string funcName, int cnt){
 
         // put the existing content of the register where it belongs
         
-        loadIntoRegFromMem(reg, step);
+        loadIntoRegFromMem(funcName, reg, step);
         return reg;
     }
 }
@@ -88,7 +108,7 @@ string getVarToRegister(string var, string funcName, int cnt){
 // a = b op c 
 // op a,b,c
 
-void arithOpCode(string a, string b, string c, string op, bool integral = false){
+void arithOpCode(string funcName, string a, string b, string c, string op, bool integral = false){
     cout<<"here in artithOpcode"<<endl;
     string opCode = binaryOpMap[op];
     if(integral){
@@ -96,6 +116,16 @@ void arithOpCode(string a, string b, string c, string op, bool integral = false)
     }
     string codeLine = "\t" + opCode + "\t\t" + a + "\t" + b +  "\t" + c ;
    assemblyCode.push_back(codeLine);
+}
+
+
+void assignOpCode(string funcName, string a, string b, bool integral){
+    if(!integral){
+        loadIntoRegFromReg(funcName, a,b);
+    }
+    else{
+        loadValueIntoRegister(funcName, a,b);
+    }
 }
 
 /**
@@ -112,6 +142,35 @@ string getOrgVarFromParam(string s){
 
     return sFinal;
 }
+
+/**
+* 
+*/
+void insertDetailsIntoRegisterTable(string funcName,string reg, string var){
+    string code = "Putting " + var + " inside "+reg;
+    comment(code);
+    functionDetailsMap[funcName].registerTable[reg].variableInside = var;
+}
+
+
+
+
+
+/**
+*   @brief Clears the existing content of a register
+*/
+void clearExistingRegister(string funcName, string reg){
+    if(functionDetailsMap[funcName].registerTable[reg].variableInside != ""){
+        string var = functionDetailsMap[funcName].registerTable[reg].variableInside;
+        if(var != ""){
+            string code = "Clearing " + reg + " having value " + var;
+            comment(code);
+        }
+        // push this value back
+    }
+}
+
+
 
 /**
  * @brief Loading Argument to a variable
@@ -134,12 +193,12 @@ void loadToVariable(int addr, string param, string funcName, int no){
 
                 if(no < RISCVReg["ARG"].size()){
                     // copying from arg registers to the allocated register
-                    loadIntoRegFromReg(RISCVReg["ARG"][no], _varDetails.regAllocated);
+                    loadIntoRegFromReg(funcName, RISCVReg["ARG"][no], _varDetails.regAllocated);
                 }
                 else{
                     // copying from the memory address to the allocated register;
                     int step = (addr - sp)/4;
-                    loadIntoRegFromMem(_varDetails.regAllocated, step);
+                    loadIntoRegFromMem(funcName, _varDetails.regAllocated, step);
                     functionDetailsMap[funcName].variableTable[_varName].presentInReg = true;
                 }
             }
@@ -147,7 +206,7 @@ void loadToVariable(int addr, string param, string funcName, int no){
                 // this variable has got no register
                 if(no < RISCVReg["ARG"].size()){
                     loadIntoLocalMemoryFromReg(RISCVReg["ARG"][no]);
-                    loadIntoRegFromMem(_varDetails.regAllocated, 1);
+                    loadIntoRegFromMem(funcName, _varDetails.regAllocated, 1);
                 }
                 else{
                     functionDetailsMap[funcName].variableTable[_varName].memLoc = addr;
