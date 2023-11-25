@@ -7,7 +7,7 @@ Generating code for main
 !Warning Variable val_2 not declared 
 
 Variables
-ReturnVal _INTERNAL_MAP_SIZE_0 _t14_2 _t15_2 _t16_2 _t17_3 _t18_3 _t19_2 _t1_2 val_2 
+ReturnVal _INTERNAL_MAP_SIZE_0 _t14_2 _t15_2 _t16_2 _t17_3 _t18_3 _t19_2 _t1_2 map_2 val_2 
 label_1:
 _t1_2 = #40
 _INTERNAL_MAP_SIZE_0 = _t1_2
@@ -32,11 +32,11 @@ Return _t19_2
 hereTEMPSTORAGE
 Total reg available 2
 Degrees 
-1 1 1 2 2 1 2 0 1 4 
+1 1 1 2 2 1 2 0 1 0 4 
 Registers allocated 
 Name : ReturnVal
 Type : TEMPSTORAGE
-Allocated Register : x7
+Allocated Register : x9
 Mem initialized :-1
 Starts :7
 Ends :7
@@ -96,6 +96,13 @@ Allocated Register : x8
 Mem initialized :-1
 Starts :1
 Ends :2
+
+Name : map_2
+Type : TEMPSTORAGE
+Allocated Register : x7
+Mem initialized :-1
+Starts :4
+Ends :4
 
 Name : val_2
 Type : TEMPSTORAGE

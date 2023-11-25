@@ -151,6 +151,14 @@ set <string> operators = {
     {"*"    ,   "muli"},
     {"/"    ,   "divi"}   
  };
+
+ map <string, string> jumpsOp = {
+    {"=="    ,   "BEQ"},
+    {"!="    ,   "BNE"},
+    {"<"    ,   "BLT"},
+    {">"    ,   "BGE"}   
+ };
+
 #define FUNCTION_STACK_SIZE 1000
 #define NET_STACK_SIZE 1000000
 

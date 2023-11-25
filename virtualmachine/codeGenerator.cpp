@@ -140,9 +140,121 @@ void codeGenerator(string funcName){
     for(int wordIndex = 0; wordIndex < optimizedStream.size(); wordIndex++){
          string line = optimizedStream[wordIndex];
         vector <string> words = processWords(line);
+        
+
+        // As per compiler only == type is bein done
+        // if( x == y  ) goto types
+        if(words[0] == "if"){
+            int startB = find(words.begin(), words.end(), "(") - words.begin();
+            int endB = find(words.begin(), words.end(), ")") - words.begin();
+            int gotoIdx = find(words.begin(), words.end(), "goto") - words.begin();
+            if(startB == words.size() || endB== words.size() || gotoIdx == words.size()){
+                cout<<"Error : Wrong information in line "<<endl;
+                for(auto i : words) cout<<i<<" ";
+                cout<<endl;
+                continue;
+            }
+            string label = words[gotoIdx + 1];
+            vector <string> identifiers;
+            string op = "";
+            for(int i = startB + 1; i < endB; i++){
+                string word = words[i];
+                if(jumpsOp.count(word) > 0){
+                    op = word;
+                }
+                else{
+                    identifiers.push_back(word);
+                }
+            }
+
+
+            if(op == ""){
+                string message = "Error : Incomaptible Comparision operation - not in < >= == !=";
+                throwError(words, message);
+                continue;
+            }
+
+            
+            if(identifiers.size() == 2){
+                bool integral = false;
+                if(identifiers[1][0] == '#')
+                    integral = true;
+
+                if(integral )
+                    jumpOpCode(funcName, getVarToRegister(identifiers[0], funcName, 0), identifiers[1], op, label,integral);
+                else
+                    jumpOpCode(funcName, getVarToRegister(identifiers[0], funcName, 0), getVarToRegister(identifiers[1], funcName,1), op, label,integral);
+
+            }
+            else{
+                string message = "Error : != 2 identifier in if () ";
+                throwError(words,message);
+                continue;
+            }
+        }
+
+        // goto <label>
+        else if(words[0] == "goto"){
+            assemblyCode.push_back("\t JAL " + words[1]);
+        }
+
+        else if(words[0] == "call"){
+            
+            // note return address should be stored here
+
+
+            // storing the return address
+            comment("Spilling the return address to the 0th offset of the function");
+            int newRetVal = assemblyCode.size() + 2;
+
+            // store the return address in memory
+            loadRAintoMemory(funcName);
+            comment("Picking up the new return address");
+            string code = "\t li \t\t" +RISCVReg["RETADDRESS"][0]+"\t"+to_string(newRetVal);
+            assemblyCode.push_back(code);
+
+
+            comment("Function call happening");
+            assemblyCode.push_back("\t JAL " + words[1]);
+
+
+             // get back the return address
+            comment("getting back the old return address");
+            loadMemoryIntoRA(funcName);
+
+        }
+        else if(words[0] == "Return"){
+            comment("Function returning");
+            loadIntoRegFromReg(funcName, getVarToRegister(words[1], funcName, 0), RISCVReg["RETVALUE"][0]);
+            string code = "JAL " + RISCVReg["RETADDRESS"][0] + ";";
+            assemblyCode.push_back(code);
+
+           
+        }
+
+        // FunctionCall
+        else if(words[0] == "FunctionCall"){
+            string funcCalleeName = words[1];
+            wordIndex++;
+            // take in all the params
+            int paramno = 0;
+            while(wordIndex < optimizedStream.size() ){
+                vector <string> paramwords = processWords(optimizedStream[wordIndex]);
+                // break if the first word is not "param"
+                if(paramwords.size() > 0 && paramwords[0] != "param"){
+                    wordIndex--;
+                    break;
+                }
+                wordIndex++;
+                comment("");
+                comment("assigning params for " + funcCalleeName);
+                assignParams(funcCalleeName,funcName, paramwords[1], paramno);
+                paramno++;
+            }
+        }
 
         // a = b op c types
-        if(find(words.begin(), words.end(), "=") != words.end()){
+        else if(find(words.begin(), words.end(), "=") != words.end()){
             int idx = find(words.begin(), words.end(), "=") - words.begin();
             string var1 = words[idx - 1];
             string op= "";
@@ -251,4 +363,11 @@ void preProcessAssembly(){
  */
 void comment(string s){
     assemblyCode.push_back("\t #" + s);
+}
+
+
+void throwError(vector <string> line, string message){
+    cout<<message<<endl;
+    for(auto i : line) cout<<i<<" ";
+    cout<<endl;
 }

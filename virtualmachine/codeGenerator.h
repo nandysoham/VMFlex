@@ -15,3 +15,4 @@ void comment(string s);
 
 void initializeRegisterTable(string funcName);
 void printRegisterTable(string funcName);
+void throwError(vector <string> line, string message);

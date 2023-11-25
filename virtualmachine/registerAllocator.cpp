@@ -226,6 +226,14 @@ void allocateRegister(string functionName, string regType){
         }
         
     }
+
+    // Special case for return values
+    if(_variableTableMap.count("ReturnVal")){
+        _variableTableMap["ReturnVal"].memLocOffset = -1;
+        _variableTableMap["ReturnVal"].regAllocated = RISCVReg["RETVALUE"][0];
+    }
+
+
     for(auto [_varName, _varDetails] : _variableTableMap)
         functionDetailsMap[functionName].variableTable[_varName] = _varDetails;
     printVariableTable( functionDetailsMap[functionName].variableTable);
@@ -282,6 +290,22 @@ void registerAllocator(string functionName){
             }
 
             continue;
+        }
+
+        // syntax : param x
+        if(words[0] == "param"){
+            string declared = words[1];
+            if(declared[0] == '*')
+                declared = extractNameFromPointer(declared);
+            if(variableInfoMap.count(declared) == 0){
+                Variable newvar = Variable();
+                newvar.startLine = wordIndex;
+                newvar.endLine = wordIndex;
+                variableInfoMap[declared] = newvar;
+            }
+            else{
+                variableInfoMap[declared].endLine = wordIndex;
+            }
         }
 
 

@@ -74,6 +74,8 @@ extern map <string, vector <string> > RISCVReg;
 extern set <string> operators;
 extern map <string, string> binaryOpMap;
 extern map <string, string> iBinaryOpMap;
+extern map <string, string> jumpsOp;
+
 
 // this allocation is just heap
 #define FUNCTION_STACK_SIZE 1000

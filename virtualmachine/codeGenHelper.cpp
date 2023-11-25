@@ -33,10 +33,11 @@ string getOffsetMemoryInt(int step=1){
  * @param reg Destination Register
  * @param step the no of steps(/4) to get up
  */
-void loadIntoRegFromMem(string funcName, string reg, int step){
+void loadIntoRegFromMem(string funcName, string reg, int step, string val){
     // clearing existing details of reg
     clearExistingRegister(funcName, reg);
-    string code = "\t lw \t " + reg + getOffsetMemoryInt(step);
+    insertDetailsIntoRegisterTable(funcName, reg, val);
+    string code = "\t lw \t " + reg +" \t "+ getOffsetMemoryInt(step);
     assemblyCode.push_back(code);
 }
 
@@ -68,7 +69,19 @@ void loadValueIntoRegister(string funcName,string reg, string val){
     assemblyCode.push_back(code);
 }
 
+void loadRAintoMemory(string funcName){
+    int addr = functionHeapMemoryMap[funcName];
+    int step = (addr - sp)/4;
+    string code = "\t sw \t " + RISCVReg["RETADDRESS"][0] +" \t "+ getOffsetMemoryInt(step);
+    assemblyCode.push_back(code);
+}
 
+void loadMemoryIntoRA(string funcName){
+    int addr = functionHeapMemoryMap[funcName];
+    int step = (addr - sp)/4;
+    string code = "\t lw \t " + RISCVReg["RETADDRESS"][0] +" \t "+ getOffsetMemoryInt(step);
+    assemblyCode.push_back(code);
+}
 
 /**
  * @brief Load Into local Memory from Register
@@ -80,6 +93,13 @@ void loadIntoLocalMemoryFromReg(string reg){
     string code = "\t sw \t\t" + reg + "\t" + getOffsetMemoryInt(1);
     assemblyCode.push_back(code);
 }
+
+
+void loadIntoMemoryFromReg(string reg, int step){
+    string code = "\t sw \t\t" + reg + "\t" + getOffsetMemoryInt(step);
+    assemblyCode.push_back(code);
+}
+
 
 /**
  * @brief Given a identifier Gets the details of Variable and store it back
@@ -93,12 +113,17 @@ string getVarToRegister(string var, string funcName, int cnt){
     }
     else{
         int addr = functionDetailsMap[funcName].variableTable[var].memLoc;
+        if(addr == -1){
+            addr = functionDetailsMap[funcName].variableTable[var].memLocOffset;
+            // functionDetailsMap[funcName].variableTable[var].memLoc = functionDetailsMap[funcName].variableTable[var].memLocOffset;
+        }
+        addr = functionHeapMemoryMap["free"] + addr*4;
         int step = (addr - sp)/4;
         string reg = RISCVReg["TEMPCAL"][cnt];
 
         // put the existing content of the register where it belongs
         
-        loadIntoRegFromMem(funcName, reg, step);
+        loadIntoRegFromMem(funcName, reg, step, var);
         return reg;
     }
 }
@@ -125,6 +150,38 @@ void assignOpCode(string funcName, string a, string b, bool integral){
     }
     else{
         loadValueIntoRegister(funcName, a,b);
+    }
+}
+
+
+void jumpOpCode(string funcName, string a, string b, string op, string label,bool integral){
+    string opcode = jumpsOp[op];
+    if(integral){
+        // This would always be 0 -- as per compiler formulation
+        b = RISCVReg["ZERO"][0];
+    }
+
+    string code = "\t "+opcode + "\t\t" + a + " ,\t" + b + " ,\t" + label;
+    assemblyCode.push_back(code);
+
+}
+
+
+
+void assignParams(string funcName, string thisFuncName, string param, int pno){
+    int MAX_ARG_REG = RISCVReg["ARG"].size();
+    if(pno < MAX_ARG_REG){
+        // only using the 0th temp register we can do the stuff
+        comment("Param "+ param + "loading into " + RISCVReg["ARG"][pno]);
+        loadIntoRegFromReg(funcName, getVarToRegister(param, thisFuncName, 0), RISCVReg["ARG"][pno]);
+    }
+    else{
+        // load into the offset of the function
+        int offset = pno - MAX_ARG_REG;
+        int mem = functionHeapMemoryMap[funcName] + offset*4;
+        int step = (mem - sp)/4;
+        comment("Param "+ param + "loading into offset "+ to_string(offset) + " of " + funcName);
+        loadIntoMemoryFromReg( getVarToRegister(param, thisFuncName, 0),step);      
     }
 }
 
@@ -164,7 +221,10 @@ void clearExistingRegister(string funcName, string reg){
         string var = functionDetailsMap[funcName].registerTable[reg].variableInside;
         if(var != ""){
             string code = "Clearing " + reg + " having value " + var;
+            int mem = functionDetailsMap[funcName].variableTable[var].memLocOffset;
+            int step = (functionHeapMemoryMap["free"] + 2*mem - sp)/4;
             comment(code);
+            loadIntoMemoryFromReg(reg, step);
         }
         // push this value back
     }
@@ -198,7 +258,7 @@ void loadToVariable(int addr, string param, string funcName, int no){
                 else{
                     // copying from the memory address to the allocated register;
                     int step = (addr - sp)/4;
-                    loadIntoRegFromMem(funcName, _varDetails.regAllocated, step);
+                    loadIntoRegFromMem(funcName, _varDetails.regAllocated, step, _varName);
                     functionDetailsMap[funcName].variableTable[_varName].presentInReg = true;
                 }
             }
@@ -206,7 +266,7 @@ void loadToVariable(int addr, string param, string funcName, int no){
                 // this variable has got no register
                 if(no < RISCVReg["ARG"].size()){
                     loadIntoLocalMemoryFromReg(RISCVReg["ARG"][no]);
-                    loadIntoRegFromMem(funcName, _varDetails.regAllocated, 1);
+                    loadIntoRegFromMem(funcName, _varDetails.regAllocated, 1, _varName);
                 }
                 else{
                     functionDetailsMap[funcName].variableTable[_varName].memLoc = addr;
