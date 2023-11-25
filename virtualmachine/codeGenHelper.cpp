@@ -112,6 +112,10 @@ string getVarToRegister(string var, string funcName, int cnt){
         return functionDetailsMap[funcName].variableTable[var].regAllocated;
     }
     else{
+        // if(functionDetailsMap[funcName].variableTable[var].memLocOffset == -1)
+        //     cout<<"not found "<<var<<endl;
+
+        
         int addr = functionDetailsMap[funcName].variableTable[var].memLoc;
         if(addr == -1){
             addr = functionDetailsMap[funcName].variableTable[var].memLocOffset;

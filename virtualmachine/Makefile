@@ -5,7 +5,7 @@ CXXFLAGS = -O2 -std=c++17
  
 
 # Source files
-CPP_SOURCES = driver.cpp DeadCodeRemoval.cpp registerAllocator.cpp codeGenerator.cpp codeGenHelper.cpp Structure.cpp memHelper.cpp
+CPP_SOURCES = driver.cpp DeadCodeRemoval.cpp registerAllocator.cpp codeGenerator.cpp codeGenHelper.cpp Structure.cpp memHelper.cpp heapManager.cpp
 OBJECTS = $(CPP_SOURCES:.cpp=.o) 
 
 # Final target

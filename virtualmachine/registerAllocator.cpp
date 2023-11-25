@@ -308,6 +308,33 @@ void registerAllocator(string functionName){
             }
         }
 
+        // syntax : memory
+        // memory <> <> #1
+        if(words[0] == "memory"){
+            string declared = words[1];
+            string amount = words[2];
+            if(variableInfoMap.count(declared) == 0){
+                Variable newvar = Variable();
+                newvar.startLine = wordIndex;
+                newvar.endLine = wordIndex;
+                variableInfoMap[declared] = newvar;
+            }
+            else{
+                variableInfoMap[declared].endLine = wordIndex;
+            }
+
+            if(variableInfoMap.count(amount) == 0){
+                Variable newvar = Variable();
+                newvar.startLine = wordIndex;
+                newvar.endLine = wordIndex;
+                variableInfoMap[amount] = newvar;
+            }
+            else{
+                variableInfoMap[amount].endLine = wordIndex;
+            }
+
+        }
+
 
         // Syntax if ( ) goto
         if(find(words.begin(), words.end(), "if") != words.end()){

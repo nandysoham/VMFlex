@@ -1,7 +1,7 @@
 #include "codeGenerator.h"
 #include "Structure.h"
 #include "codeGenHelper.h"
-
+#include "heapManager.h"
 
 /**
  * @brief On start of each function , a space is reversed in the stack which is used as
@@ -42,7 +42,10 @@ void fetchParams(string funcName){
         // initializing heap address at O(Main)
         comment("Initializing Heap Address at First offset of main");
         string reg = RISCVReg["TEMPSTORAGE"][0];
-         code = "\t li \t\t "+ reg + ",  x000";
+
+
+        string heapaddr = to_string(NET_STACK_SIZE/4);
+         code = "\t li \t\t "+ reg + ",  " + heapaddr;
         assemblyCode.push_back(code);
         int addr = functionHeapMemoryMap[funcName];
         cout<<"Main starts at"<<addr<<endl;
@@ -192,10 +195,20 @@ void codeGenerator(string funcName){
                 continue;
             }
         }
-
         // goto <label>
         else if(words[0] == "goto"){
             assemblyCode.push_back("\t JAL " + words[1]);
+        }
+
+        // memory <> <> 
+        else if(words[0] == "memory"){
+            // allocating memory
+            string declared = words[1];
+            string amount = words[2];
+            comment("Allocating memory of " + amount + " to "+ declared);
+            clearExistingRegister(funcName, RISCVReg["TEMPCAL"][0]);
+            allocateMem(getVarToRegister(declared, funcName, 1), getVarToRegister(amount, funcName, 2));
+            comment("Done allocating");
         }
 
         else if(words[0] == "call"){
