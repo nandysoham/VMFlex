@@ -1,7 +1,8 @@
 #include "codeGenerator.h"
 #include "codeGenHelper.h"
 #include "Structure.h"
-
+#include "heapManager.h"
+#include "memHelper.h"
 /**
  * @brief Assembly code to increment the stack pointer
  * 
@@ -9,7 +10,7 @@
  * if currently it sp --> it would be sp + step
  */
 void increaseSp(int step = 1){
-    string code = "\t addi \t sp sp "+to_string(step);
+    string code = "\t addi \t\t sp\t, sp \t,"+to_string(step);
     assemblyCode.push_back(code);
 }
 
@@ -37,7 +38,7 @@ void loadIntoRegFromMem(string funcName, string reg, int step, string val){
     // clearing existing details of reg
     clearExistingRegister(funcName, reg);
     insertDetailsIntoRegisterTable(funcName, reg, val);
-    string code = "\t lw \t " + reg +" \t "+ getOffsetMemoryInt(step);
+    string code = "\t lw \t\t" + reg +" \t,\t"+ getOffsetMemoryInt(step);
     assemblyCode.push_back(code);
 }
 
@@ -56,7 +57,7 @@ void loadIntoRegFromReg(string funcName, string sourceReg, string destReg){
     clearExistingRegister(funcName, destReg);
 
 
-    string code = "\t mv \t\t" + destReg + "\t" + sourceReg;
+    string code = "\t mv \t\t" + destReg + "\t,\t" + sourceReg;
     assemblyCode.push_back(code);
 }
 
@@ -65,21 +66,21 @@ void loadValueIntoRegister(string funcName,string reg, string val){
     clearExistingRegister(funcName, reg);
     insertDetailsIntoRegisterTable(funcName, reg, val);
 
-    string code = "\t li \t\t"+reg+"\t "+val;
+    string code = "\t li \t\t"+reg+"\t,\t"+val;
     assemblyCode.push_back(code);
 }
 
 void loadRAintoMemory(string funcName){
     int addr = functionHeapMemoryMap[funcName];
     int step = (addr - sp)/4;
-    string code = "\t sw \t " + RISCVReg["RETADDRESS"][0] +" \t "+ getOffsetMemoryInt(step);
+    string code = "\t sw \t\t" + RISCVReg["RETADDRESS"][0] +"\t,\t"+ getOffsetMemoryInt(step);
     assemblyCode.push_back(code);
 }
 
 void loadMemoryIntoRA(string funcName){
     int addr = functionHeapMemoryMap[funcName];
     int step = (addr - sp)/4;
-    string code = "\t lw \t " + RISCVReg["RETADDRESS"][0] +" \t "+ getOffsetMemoryInt(step);
+    string code = "\t lw \t\t" + RISCVReg["RETADDRESS"][0] +"\t,\t"+ getOffsetMemoryInt(step);
     assemblyCode.push_back(code);
 }
 
@@ -96,7 +97,7 @@ void loadIntoLocalMemoryFromReg(string reg){
 
 
 void loadIntoMemoryFromReg(string reg, int step){
-    string code = "\t sw \t\t" + reg + "\t" + getOffsetMemoryInt(step);
+    string code = "\t sw\t\t" + reg + "\t,\t" + getOffsetMemoryInt(step);
     assemblyCode.push_back(code);
 }
 
@@ -114,7 +115,24 @@ string getVarToRegister(string var, string funcName, int cnt){
     else{
         // if(functionDetailsMap[funcName].variableTable[var].memLocOffset == -1)
         //     cout<<"not found "<<var<<endl;
-
+        if(var[0] == '*'){
+            // now proceed to heap
+            comment("Processing "+ var);
+            if(cnt == 0){
+                // no need to do this
+                comment("");
+                comment("");
+                comment("Declared so No need to bring up memory");
+                return getVarToRegister(extractNameFromPointer(var), funcName, cnt);
+            }
+            else{
+                comment("");
+                comment("");
+                comment("Recursively get the value into " + RISCVReg["TEMPCAL"][cnt]);
+                loaderPointerToReg(var, funcName,cnt);
+                return RISCVReg["TEMPCAL"][cnt];
+            }
+        }
         
         int addr = functionDetailsMap[funcName].variableTable[var].memLoc;
         if(addr == -1){
@@ -143,7 +161,7 @@ void arithOpCode(string funcName, string a, string b, string c, string op, bool 
     if(integral){
         opCode = iBinaryOpMap[op];
     }
-    string codeLine = "\t" + opCode + "\t\t" + a + "\t" + b +  "\t" + c ;
+    string codeLine = "\t" + opCode + "\t\t" + a + "\t,\t" + b +  "\t,\t" + c ;
    assemblyCode.push_back(codeLine);
 }
 
@@ -155,6 +173,7 @@ void assignOpCode(string funcName, string a, string b, bool integral){
     else{
         loadValueIntoRegister(funcName, a,b);
     }
+
 }
 
 
@@ -165,7 +184,7 @@ void jumpOpCode(string funcName, string a, string b, string op, string label,boo
         b = RISCVReg["ZERO"][0];
     }
 
-    string code = "\t "+opcode + "\t\t" + a + " ,\t" + b + " ,\t" + label;
+    string code = "\t"+opcode + "\t\t" + a + "\t,\t" + b + "\t,\t" + label;
     assemblyCode.push_back(code);
 
 }

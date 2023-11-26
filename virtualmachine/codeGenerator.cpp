@@ -226,6 +226,7 @@ void codeGenerator(string funcName){
             string code = "\t li \t\t" +RISCVReg["RETADDRESS"][0]+"\t"+to_string(newRetVal);
             assemblyCode.push_back(code);
 
+            storeRegisterTable(funcName);
 
             comment("Function call happening");
             assemblyCode.push_back("\t JAL " + words[1]);
@@ -234,6 +235,7 @@ void codeGenerator(string funcName){
              // get back the return address
             comment("getting back the old return address");
             loadMemoryIntoRA(funcName);
+            retrieveRegisterTable(funcName);
 
         }
         else if(words[0] == "Return"){
@@ -304,6 +306,14 @@ void codeGenerator(string funcName){
                     vars[1],
                      op, integral);
                 }
+                if(var1[0] == '*'){
+                    // storing back into pointers
+                    string storedDeclared = functionDetailsMap[funcName].variableTable[var1].regAllocated;
+                    if(storedDeclared == "") storedDeclared = RISCVReg["TEMPCAL"][0];
+                    comment("Storing back " + var1 + " which is in " + storedDeclared + " to its position");
+                    storeDeclaredInHeap(storedDeclared, var1, funcName, var1);
+                    comment("Stored" + var1);
+                }
             }
             else if(op == "" && vars.size() == 2 && vars[0] == "minus"){
                 bool integral = false;
@@ -328,6 +338,15 @@ void codeGenerator(string funcName){
                     vars[1],
                      "-", integral);
                 }
+
+                if(var1[0] == '*'){
+                    // storing back into pointers
+                    string storedDeclared = functionDetailsMap[funcName].variableTable[var1].regAllocated;
+                    if(storedDeclared == "") storedDeclared = RISCVReg["TEMPCAL"][0];
+                    comment("Storing back " + var1 + " which is in " + storedDeclared + " to its position");
+                    storeDeclaredInHeap(storedDeclared, var1, funcName, var1);
+                    comment("Stored" + var1);
+                }
             }
             else if(op == "" && vars.size() == 1){
                 if(vars[0][0] != '#'){
@@ -342,6 +361,16 @@ void codeGenerator(string funcName){
                          true
                     );
                     
+                }
+
+                if(var1[0] == '*'){
+                    // storing back into pointers
+                    string storedDeclared = functionDetailsMap[funcName].variableTable[var1].regAllocated;
+                    if(storedDeclared == "") storedDeclared = RISCVReg["TEMPCAL"][0];
+
+                    comment("Storing back " + var1 + " which is in " + storedDeclared + " to its position");
+                    storeDeclaredInHeap(storedDeclared, var1, funcName, var1);
+                    comment("Stored" + var1);
                 }
             } 
             else{

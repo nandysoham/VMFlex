@@ -124,7 +124,7 @@ set <string> operators = {
     "+", "-", "*", "/",
     "==", "<", ">", "<=", ">=", "!=",
     "^", "&", "|", "&&", "||",
-    ">>", "<<"
+    ">>", "<<", "MAC"
 };
 
  map <string, string> binaryOpMap = {
@@ -141,7 +141,8 @@ set <string> operators = {
     {">"    ,   "sgt"},
     {"<="   ,   "sleq"},
     {">="   ,   "sge"},
-    {"=="   ,   "seq"}
+    {"=="   ,   "seq"},
+    {"MAC"  ,   "MAC"}
  };
 
 
@@ -149,7 +150,8 @@ set <string> operators = {
     {"+"    ,   "addi"},
     {"-"    ,   "subi"},
     {"*"    ,   "muli"},
-    {"/"    ,   "divi"}   
+    {"/"    ,   "divi"},
+    {"MAC"  ,   "MAC"}
  };
 
  map <string, string> jumpsOp = {
