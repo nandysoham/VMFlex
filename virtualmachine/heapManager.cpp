@@ -3,6 +3,12 @@
 #include "codeGenerator.h"
 #include "codeGenHelper.h"
 
+/**
+ * @brief Allocating memory in the heap
+ * 
+ * @param reg 
+ * @param amountreg 
+ */
 void allocateMem(string reg, string amountreg){
 
     string code = "";
@@ -26,6 +32,13 @@ void allocateMem(string reg, string amountreg){
 
 }
 
+/**
+ * @brief Loads pointer variable to a register
+ * 
+ * @param var 
+ * @param funcName 
+ * @param cnt 
+ */
 void loaderPointerToReg(string var,string funcName, int cnt){
     string code;
     if(var[0] != '*'){
@@ -46,6 +59,14 @@ void loaderPointerToReg(string var,string funcName, int cnt){
 
 }
 
+/**
+ * @brief for a = b op c--> store a in heap
+ * 
+ * @param reg 
+ * @param var 
+ * @param funcName 
+ * @param orgVar 
+ */
 // **a = b + c
 // spill Tempcal[0] into that location 
 void storeDeclaredInHeap(string reg, string var, string funcName, string orgVar){
@@ -74,7 +95,11 @@ void storeDeclaredInHeap(string reg, string var, string funcName, string orgVar)
     }
 }
 
-
+/**
+ * @brief Spill Register table of a partcular function
+ * 
+ * @param funcName 
+ */
 void storeRegisterTable(string funcName){
     comment("Storing register table of " + funcName);
     comment("");
@@ -109,7 +134,11 @@ void storeRegisterTable(string funcName){
 
 
 
-
+/**
+ * @brief Retrieve register table of a function
+ * 
+ * @param funcName 
+ */
 void retrieveRegisterTable(string funcName){
     comment("Retreiving register table of " + funcName);
     comment("");

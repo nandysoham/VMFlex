@@ -124,7 +124,7 @@ set <string> operators = {
     "+", "-", "*", "/",
     "==", "<", ">", "<=", ">=", "!=",
     "^", "&", "|", "&&", "||",
-    ">>", "<<", "MAC"
+    ">>", "<<", "MAC", "%"
 };
 
  map <string, string> binaryOpMap = {
@@ -142,7 +142,11 @@ set <string> operators = {
     {"<="   ,   "sleq"},
     {">="   ,   "sge"},
     {"=="   ,   "seq"},
-    {"MAC"  ,   "MAC"}
+    {"MAC"  ,   "MAC"},
+    {"||"   ,   "or"},
+    {"&&"   ,   "and"},
+    {"%"    ,   "mod"},
+    {"!="   ,   "neq"}
  };
 
 
@@ -155,10 +159,10 @@ set <string> operators = {
  };
 
  map <string, string> jumpsOp = {
-    {"=="    ,   "BEQ"},
-    {"!="    ,   "BNE"},
-    {"<"    ,   "BLT"},
-    {">"    ,   "BGE"}   
+    {"=="    ,   "beq"},
+    {"!="    ,   "bne"},
+    {"<"    ,   "blt"},
+    {">"    ,   "bge"},   
  };
 
 #define FUNCTION_STACK_SIZE 1000

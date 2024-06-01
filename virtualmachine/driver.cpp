@@ -5,7 +5,13 @@
 #include "Structure.h"
 #include "codeGenerator.h"
 
-
+/**
+ * @brief Driver function
+ * 
+ * @param arc 
+ * @param argv 
+ * @return int 
+ */
 int main(int arc, char** argv){
     parser();
     // translate();
@@ -31,7 +37,7 @@ int main(int arc, char** argv){
 
     showCallerCalllee();
     removeUnessentialFunction();
-    // printFunctionDetails();
+    printFunctionDetails();
 
     for(auto [_functionName, _functionDetails] : functionDetailsMap ){
         registerAllocator(_functionName);

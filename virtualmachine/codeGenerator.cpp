@@ -36,7 +36,7 @@ void fetchParams(string funcName){
         // get the sp down
         comment("Moving sp to the Free segment");
         int steps = NET_STACK_SIZE - functionHeapMemoryMap["free"];
-        string code = "\t add \t sp,    sp  , " + to_string(steps);
+        string code = "\t addi \t sp,    sp  , " + to_string(steps);
         assemblyCode.push_back(code);
 
         // initializing heap address at O(Main)
@@ -197,7 +197,7 @@ void codeGenerator(string funcName){
         }
         // goto <label>
         else if(words[0] == "goto"){
-            assemblyCode.push_back("\t JAL " + words[1]);
+            assemblyCode.push_back("\t jal " + words[1]);
         }
 
         // memory <> <> 
@@ -229,7 +229,7 @@ void codeGenerator(string funcName){
             storeRegisterTable(funcName);
 
             comment("Function call happening");
-            assemblyCode.push_back("\t JAL " + words[1]);
+            assemblyCode.push_back("\t jal " + words[1]);
 
 
              // get back the return address
@@ -241,7 +241,7 @@ void codeGenerator(string funcName){
         else if(words[0] == "Return"){
             comment("Function returning");
             loadIntoRegFromReg(funcName, getVarToRegister(words[1], funcName, 0), RISCVReg["RETVALUE"][0]);
-            string code = "JAL " + RISCVReg["RETADDRESS"][0] + ";";
+            string code = "jal " + RISCVReg["RETADDRESS"][0] + ";";
             assemblyCode.push_back(code);
 
            

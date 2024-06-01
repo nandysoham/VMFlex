@@ -4,7 +4,10 @@ using namespace std;
 
 
 
-
+/**
+ * @brief Printing Basic Blocks
+ * 
+ */
 void printBasicBlocks(){
 
     for(auto [x,y] : labelsToColMap){
@@ -27,7 +30,10 @@ void printBasicBlocks(){
     }
 }
 
-
+/**
+ * @brief Graph function to calculate reachability
+ * 
+ */
 void blockReachability(){
     int n = basicBlockCollection.size();
     vector <int> visited(n, false);
@@ -48,6 +54,12 @@ void blockReachability(){
 }
 
 
+/**
+ * @brief Create a Dead Code Optimize object
+ * 
+ * @param inputStream 
+ * @param name 
+ */
 void createDeadCodeOptimize(vector <string> &inputStream, string name){
     vector <string> optimizedStream;
     for(auto bb : basicBlockCollection){
@@ -196,7 +208,10 @@ void getBasicBlocks(vector <string> &inputStream, string name){
     
 
 }
-
+/**
+ * @brief Shows caller and callee
+ * 
+ */
 void showCallerCalllee(){
     for(auto [calledFunction, callerFunctionVec] : functionCalleeMap ){
         cout<<calledFunction <<" is called by ";
@@ -206,7 +221,10 @@ void showCallerCalllee(){
     }
 }
 
-
+/**
+ * @brief Removes useless functions
+ * 
+ */
 void removeUnessentialFunction(){
     vector <string> removeFunctionsVec;
     for(auto [_functionName, _functionDetails] : functionDetailsMap){
@@ -235,19 +253,26 @@ void removeUnessentialFunction(){
     }
 }
 
-
+/**
+ * @brief Printing function details
+ * 
+ */
 void printFunctionDetails(){
+    ofstream file("OptimizedCode.txt");
     for(auto [_functionName, _functionDetails] : functionDetailsMap){
-        cout<<_functionName<<" : "<<endl;
-        cout<<"Org code"<<endl<<endl;
+        file<<_functionName<<" : "<<endl;
+        file<<"Org code"<<endl<<endl;
         for(auto i : _functionDetails.code)
-            cout<<i<<endl;
+            file<<i<<endl;
 
-        cout<<"Opt code"<<endl<<endl<<endl;
+        file<<"Opt code"<<endl<<endl<<endl;
         for(auto i : _functionDetails.optCode)
-            cout<<i<<endl;
+            file<<i<<endl;
     }
+    file.close();
 }
+
+
 
 // will not work for function overloading
 void deadCodeRemoval(vector <string> &inputStream, string name){
@@ -255,5 +280,5 @@ void deadCodeRemoval(vector <string> &inputStream, string name){
     getBasicBlocks(inputStream, name);
     blockReachability();
     createDeadCodeOptimize(inputStream, name);
-    // printBasicBlocks();
+    printBasicBlocks();
 };
