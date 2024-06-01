@@ -1,0 +1,8 @@
+virtualmachine/progress.md
+virtualmachine/*.asm
+virtualmachine/*.txt
+virtualmachine/*.o
+virtualmachine/*.tac
+CompFlex/*.txt
+CompFlex/*.o
+.vscode
